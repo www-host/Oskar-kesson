@@ -6,22 +6,39 @@
 <title>Osxr Beats | Type beats &amp; instrumentals</title>
 <meta name="description" content="Type beats and instrumentals from the north, produced fresh every week by Osxr Beats.">
 <meta name="theme-color" content="#050a14">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23050a14'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%238ddcff' stroke-width='2.5'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"></noscript>
 <script>
-  /* `anim` (full motion) or `soft` (gentle, fades only) hides first-paint states that GSAP reveals.
-     The OS "reduce motion" setting picks soft, unless the visitor chose otherwise with the footer switch.
-     Both are removed again if the animation libraries fail to load. */
+  /* Picks the motion path before first paint.
+     Phones and tablets get `lite`: CSS-driven, no animation libraries. Desktop gets `anim` (full) or `soft`
+     (gentle, fades only), both GSAP-driven. `gentle` is lite's version of soft. The OS "reduce motion" setting
+     chooses gentle/soft unless the visitor picked otherwise with the footer switch.
+     The classes that hide first-paint states are removed again if the page never becomes ready. */
   (function () {
     var r = document.documentElement, pref = null;
     try { pref = localStorage.getItem('osxr-motion'); } catch (e) {}
     var force = /[?&]reduce=1/.test(location.search);
     var os = matchMedia('(prefers-reduced-motion: reduce)').matches;
     var reduce = force || pref === 'soft' || (pref !== 'full' && os);
-    r.classList.add(reduce ? 'soft' : 'anim');
-    setTimeout(function () { if (!window.__ready) r.classList.remove('anim', 'soft'); }, 6000);
+    var lite = /[?&]lite=1/.test(location.search) || matchMedia('(max-width: 899px), (hover: none) and (pointer: coarse)').matches;
+    if (lite) r.classList.add('lite', 'rv'); else r.classList.add(reduce ? 'soft' : 'anim');
+    if (lite && reduce) r.classList.add('gentle');
+    /* desktop with WebGL2 gets the 3D scene (`gl`). `loading` shows the ASCII loader; reduced motion skips it.
+       Add ?gl=0 to the address to force the CSS-only desktop version. */
+    var glOk = false;
+    if (!lite && !/[?&]gl=0/.test(location.search)) { try { glOk = !!document.createElement('canvas').getContext('webgl2'); } catch (e) {} }
+    if (glOk) {
+      r.classList.add('gl', reduce ? 'gl-still' : 'loading');
+      var pre = document.createElement('link');   // start fetching the 3D module (and its dependencies) while the page parses
+      pre.rel = 'modulepreload';
+      pre.href = 'js/scene.js';
+      document.head.appendChild(pre);
+    }
+    setTimeout(function () { if (!window.__ready) r.classList.remove('anim', 'soft', 'rv', 'loading'); }, glOk ? 14000 : 6000);
   })();
 </script>
 <style>
@@ -407,9 +424,143 @@
     .foot-bottom { flex-direction: column; }
   }
 
-  /* ---------- reduced motion: tiered, not a kill switch ---------- */
+  /* ---------- desktop WebGL version ----------
+     A fixed 3D scene sits behind the page; the CSS hero art is hidden while it is active. */
+  #gl { position: fixed; inset: 0; z-index: -1; display: none; width: 100%; height: 100%; pointer-events: none; }
+  html.gl #gl { display: block; }
+  .gl .hero { background: transparent; }
+  .gl .sky { display: none; }
+  .gl .manifesto .glow { display: none; }
+  .gl .about-visual { visibility: hidden; }
+  .gl .nav { background: none; }
+  html.loading { overflow: hidden; }
+  .loader {
+    position: fixed; inset: 0; z-index: 400; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 24px;
+    background: #02060d; transition: opacity 0.9s ease;
+  }
+  html.loading .loader { display: flex; }
+  .loader.out { opacity: 0; pointer-events: none; }
+  .loader pre { margin: 0; font: 500 12px/1 var(--font-mono); letter-spacing: 0.12em; color: var(--ice); text-shadow: 0 0 18px rgba(141, 220, 255, 0.55); }
+  .loader .pct { font: 500 12px var(--font-mono); letter-spacing: 0.3em; color: #9abbd1; }
+  .loader .pct b { color: var(--ice); font-weight: 500; }
+  /* glowing pill nav with a sliding highlight */
+  html:not(.lite) .nav-links {
+    position: relative; gap: 4px; padding: 6px; border: 1px solid rgba(141, 220, 255, 0.2); border-radius: 999px;
+    background: rgba(6, 14, 26, 0.55); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    box-shadow: 0 0 44px rgba(95, 240, 192, 0.07), inset 0 0 22px rgba(141, 220, 255, 0.04);
+  }
+  html:not(.lite) .nav-links a { position: relative; z-index: 1; padding: 10px 20px; border-radius: 999px; }
+  html:not(.lite) .nav-links a::after { display: none; }
+  .pill-ind {
+    position: absolute; z-index: 0; top: 6px; bottom: 6px; left: 0; width: 0; border-radius: 999px; opacity: 0; pointer-events: none;
+    background: rgba(141, 220, 255, 0.13); box-shadow: 0 0 22px rgba(141, 220, 255, 0.18), inset 0 0 0 1px rgba(141, 220, 255, 0.22);
+  }
+
+  /* ---------- lite mode: phones and tablets ----------
+     CSS-driven, so it starts at first paint and downloads no animation libraries. Only transform and opacity
+     animate. `.gentle` (Reduce Motion) swaps movement for fades; it is handled here, not by the safety net below. */
+  html { -webkit-tap-highlight-color: transparent; }
+  .lite .cursor { display: none; }
+  .lite .nav { height: 72px; background: linear-gradient(180deg, rgba(5, 10, 20, 0.97) 0%, rgba(5, 10, 20, 0.9) 60%, rgba(5, 10, 20, 0) 100%); }
+  @keyframes lt-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes lt-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+  @keyframes lt-rise { from { transform: translateY(108%); } to { transform: none; } }
+  @keyframes lt-orb-in { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: none; } }
+  @keyframes lt-forest { from { opacity: 0; transform: translateY(24%); } to { opacity: 1; transform: none; } }
+  @keyframes lt-drift { 0%, 100% { transform: translateX(-8%) skewX(-6deg); opacity: 0.85; } 50% { transform: translateX(8%) skewX(6deg); opacity: 0.45; } }
+  @keyframes lt-breathe { 0%, 100% { opacity: 0.85; } 50% { opacity: 0.45; } }
+  @keyframes lt-twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  @keyframes lt-spin { to { transform: rotate(360deg); } }
+  @keyframes lt-glow { from { opacity: 0.4; } to { opacity: 0.95; } }
+  @keyframes lt-kick {
+    0%, 100% { transform: scale(1); } 2% { transform: scale(1.05); } 12% { transform: scale(0.995); } 17% { transform: scale(1); }
+    19% { transform: scale(1.027); } 28% { transform: scale(1); } 50% { transform: scale(1); } 52% { transform: scale(1.045); }
+    62% { transform: scale(0.996); } 67% { transform: scale(1); } 69% { transform: scale(1.025); } 78% { transform: scale(1); }
+  }
+  @keyframes lt-kick-cap {
+    0%, 100% { transform: scale(1); } 2% { transform: scale(1.2); } 12% { transform: scale(0.98); } 17% { transform: scale(1); }
+    19% { transform: scale(1.11); } 28% { transform: scale(1); } 50% { transform: scale(1); } 52% { transform: scale(1.18); }
+    62% { transform: scale(0.985); } 67% { transform: scale(1); } 69% { transform: scale(1.1); } 78% { transform: scale(1); }
+  }
+  @keyframes lt-wave { 0% { transform: scale(1); opacity: 0; } 8% { opacity: 0.5; } 100% { transform: scale(2.1); opacity: 0; } }
+  @keyframes lt-ripple { 0%, 100% { opacity: 0; } 12% { opacity: 0.4; } 45% { opacity: 0; } }
+  @keyframes lt-eq { from { transform: scaleY(0.14); } to { transform: scaleY(1); } }
+  @keyframes lt-eq-soft { from { opacity: 0.35; } to { opacity: 1; } }
+  @keyframes lt-marquee { to { transform: translateX(-50%); } }
+  @keyframes lt-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+  @keyframes lt-sq { from { transform: translate(-50%, -50%) rotate(45deg); } to { transform: translate(-50%, -50%) rotate(405deg); } }
+  @keyframes lt-sq-rev { from { transform: translate(-50%, -50%) rotate(45deg); } to { transform: translate(-50%, -50%) rotate(-315deg); } }
+
+  /* intro */
+  .lite .hero .sky { animation: lt-fade 1.6s ease-out both; }
+  .lite .nav > * { animation: lt-fade 0.8s ease-out 0.3s both; }
+  .lite .hero .eyebrow { animation: lt-up 0.8s var(--ease-out) 0.5s both; }
+  .lite .hero h1 .lnt { display: inline-block; animation: lt-rise 1.1s var(--ease-out) both; }
+  .lite .hero h1 .ln:nth-child(1) .lnt { animation-delay: 0.7s; }
+  .lite .hero h1 .ln:nth-child(2) .lnt { animation-delay: 0.85s; }
+  .lite .hero h1 .ln:nth-child(3) .lnt { animation-delay: 1s; }
+  .lite .hero .intro { animation: lt-up 0.9s var(--ease-out) 1.3s both; }
+  .lite .hero .actions { animation: lt-up 0.9s var(--ease-out) 1.45s both; }
+  .lite .eq, .lite .scrollhint { animation: lt-fade 1.2s ease-out 1.4s both; }
+  .lite .forest img { animation: lt-forest 2s var(--ease-out) 0.2s both; }
+  .lite .orb { animation: lt-orb-in 1.8s var(--ease-out) 0.3s both; }
+  /* ambient: soft radial shapes instead of big blur filters, which are costly on phones */
+  .lite .aurora b { filter: none; animation: lt-drift 18s ease-in-out infinite; }
+  .lite .aurora .l1 b { background: radial-gradient(closest-side, rgba(95, 240, 192, 0.5), rgba(95, 240, 192, 0)); }
+  .lite .aurora .l2 b { animation-duration: 23s; animation-delay: -6s; background: radial-gradient(closest-side, rgba(141, 220, 255, 0.42), rgba(143, 134, 255, 0.12) 60%, rgba(141, 220, 255, 0)); }
+  .lite .aurora .l3 b { animation-duration: 29s; animation-delay: -12s; background: radial-gradient(closest-side, rgba(143, 134, 255, 0.36), rgba(95, 240, 192, 0.1) 60%, rgba(143, 134, 255, 0)); }
+  .lite .stars.s1 { animation: lt-twinkle 3.2s ease-in-out infinite; }
+  .lite .stars.s2 { animation: lt-twinkle 4.4s ease-in-out 1s infinite; }
+  /* the speaker */
+  .lite .orbpulse { animation: lt-kick 1.6s ease-out 2.2s infinite; }
+  .lite .cap { animation: lt-kick-cap 1.6s ease-out 2.2s infinite; }
+  .lite .surround { animation: lt-kick 1.6s ease-out 2.22s infinite; }
+  .lite .orbglow { animation: lt-glow 1.6s ease-in-out infinite alternate; }
+  .lite .ring.r1 { animation: lt-spin 90s linear infinite; }
+  .lite .ring.r2 { animation: lt-spin 140s linear infinite reverse; }
+  .lite .ring.r3 { animation: lt-spin 200s linear infinite; }
+  .lite .waves i { opacity: 0; animation: lt-wave 2.4s ease-out infinite; }
+  .lite .waves i:nth-child(1) { animation-delay: 2.2s; }
+  .lite .waves i:nth-child(2) { animation-delay: 2.8s; }
+  .lite .waves i:nth-child(3) { animation-delay: 3.4s; }
+  .lite .waves i:nth-child(4) { animation-delay: 4s; }
+  .lite .eq i { will-change: auto; animation: lt-eq var(--d, 0.7s) ease-in-out var(--dl, 0s) infinite alternate; }
+  .lite.hero-off .hero *, .lite.hero-off .hero *::before { animation-play-state: paused; }
+  /* marquee, bobbing hint, turning squares */
+  .lite .mq-track { animation: lt-marquee 38s linear infinite; }
+  .lite .mq-track.paused { animation-play-state: paused; }
+  .lite .mq-toggle { display: grid; }
+  .lite .scrollhint span { animation: lt-bob 0.9s ease-in-out infinite; }
+  .lite .sq.a { animation: lt-sq 30s linear infinite; }
+  .lite .sq.b { animation: lt-sq-rev 40s linear infinite; }
+  .lite .sq.c { animation: lt-sq 55s linear infinite; }
+  /* reveals (a small observer adds .in) */
+  .lite.rv [data-reveal], .lite.rv .card, .lite.rv .foot-word {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.8s ease-out calc(var(--i, 0) * 90ms), transform 0.9s var(--ease-out) calc(var(--i, 0) * 90ms);
+  }
+  .lite.rv [data-reveal].in, .lite.rv .card.in, .lite.rv .foot-word.in { opacity: 1; transform: none; }
+  .lite .manifesto .w { display: inline-block; opacity: 0; transform: translateY(55%); transition: opacity 0.7s ease-out calc(var(--i) * 40ms), transform 0.9s var(--ease-out) calc(var(--i) * 40ms); }
+  .lite .manifesto p.in .w { opacity: 1; transform: none; }
+  .lite .manifesto em::after { transform: scaleX(0); transition: transform 1s var(--ease-out) 1.1s; }
+  .lite .manifesto p.in em::after { transform: scaleX(1); }
+  .lite.rv .wave path { stroke-dashoffset: 1; transition: stroke-dashoffset 2.6s ease-out; }
+  .lite.rv .about.in .wave path { stroke-dashoffset: 0; }
+  /* gentle (Reduce Motion): fades and breathing only, nothing travels, spins or scales */
+  .lite.gentle .hero .eyebrow, .lite.gentle .hero .intro, .lite.gentle .hero .actions, .lite.gentle .hero h1 .lnt { animation-name: lt-fade; }
+  .lite.gentle .orb, .lite.gentle .forest img { animation-name: lt-fade; }
+  .lite.gentle .aurora b { animation-name: lt-breathe; }
+  .lite.gentle .orbpulse, .lite.gentle .cap, .lite.gentle .surround, .lite.gentle .ring, .lite.gentle .scrollhint span,
+  .lite.gentle .sq, .lite.gentle .mq-track { animation: none; }
+  .lite.gentle .waves i { animation-name: lt-ripple; }
+  .lite.gentle .eq i { animation-name: lt-eq-soft; }
+  .lite.gentle .mq-toggle { display: none; }
+  .lite.rv.gentle [data-reveal], .lite.rv.gentle .card, .lite.rv.gentle .foot-word, .lite.gentle .manifesto .w { transform: none; }
+  .lite.gentle .manifesto em::after { transform: none; transition: none; }
+
+  /* ---------- reduced motion: tiered, not a kill switch (desktop path; lite handles itself above) ---------- */
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    html:not(.lite) *, html:not(.lite) *::before, html:not(.lite) *::after {
       animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important; scroll-behavior: auto !important;
     }
@@ -430,6 +581,11 @@
 </head>
 <body>
 
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="loader" role="status" aria-label="Loading">
+  <pre aria-hidden="true"></pre>
+  <div class="pct" aria-hidden="true"><b>000</b> %</div>
+</div>
 <a class="skip" href="#main">Skip to content</a>
 <div class="progress" aria-hidden="true"></div>
 <div class="cursor" aria-hidden="true"><span>PLAY</span></div>
@@ -478,7 +634,7 @@
 
     <div class="wrap hero-inner">
       <p class="eyebrow" data-hero>Producer · sound architect</p>
-      <h1><span class="ln">Feel</span><span class="ln accent">the</span><span class="ln">Freq.</span></h1>
+      <h1><span class="ln"><span class="lnt">Feel</span></span><span class="ln accent"><span class="lnt">the</span></span><span class="ln"><span class="lnt">Freq.</span></span></h1>
       <div class="hero-foot">
         <p class="intro" data-hero>Type beats and instrumentals cut from the cold light of the north, produced fresh every week.</p>
         <div class="actions" data-hero>
@@ -533,27 +689,27 @@
           <div class="meta"><strong>“MOST WANTED”</strong><span>C.Gambino x 23 x Ninety Type Beat</span><span class="dur">3:01</span><span class="sr">Watch on YouTube, opens in a new tab</span></div>
         </a></li>
         <li class="card"><a href="https://www.youtube.com/watch?v=gakidc9bUwY" target="_blank" rel="noopener" data-cursor="PLAY">
-          <div class="thumb"><img src="https://i.ytimg.com/vi/gakidc9bUwY/hqdefault.jpg" alt="" width="480" height="360" decoding="async"><span class="num">03</span><span class="play"></span></div>
+          <div class="thumb"><img src="https://i.ytimg.com/vi/gakidc9bUwY/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" decoding="async"><span class="num">03</span><span class="play"></span></div>
           <div class="meta"><strong>“HACK I HÄL”</strong><span>Nuqi Type Beat</span><span class="dur">2:34</span><span class="sr">Watch on YouTube, opens in a new tab</span></div>
         </a></li>
         <li class="card"><a href="https://www.youtube.com/watch?v=ubO51lw1aPI" target="_blank" rel="noopener" data-cursor="PLAY">
-          <div class="thumb"><img src="https://i.ytimg.com/vi/ubO51lw1aPI/hqdefault.jpg" alt="" width="480" height="360" decoding="async"><span class="num">04</span><span class="play"></span></div>
+          <div class="thumb"><img src="https://i.ytimg.com/vi/ubO51lw1aPI/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" decoding="async"><span class="num">04</span><span class="play"></span></div>
           <div class="meta"><strong>“MATADOR”</strong><span>Sarettii Type Beat</span><span class="dur">2:34</span><span class="sr">Watch on YouTube, opens in a new tab</span></div>
         </a></li>
         <li class="card"><a href="https://www.youtube.com/watch?v=448Qgm6PrL4" target="_blank" rel="noopener" data-cursor="PLAY">
-          <div class="thumb"><img src="https://i.ytimg.com/vi/448Qgm6PrL4/hqdefault.jpg" alt="" width="480" height="360" decoding="async"><span class="num">05</span><span class="play"></span></div>
+          <div class="thumb"><img src="https://i.ytimg.com/vi/448Qgm6PrL4/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" decoding="async"><span class="num">05</span><span class="play"></span></div>
           <div class="meta"><strong>“DONT LIE”</strong><span>Y4ska x Jireel x Nuqi Type Beat</span><span class="dur">2:48</span><span class="sr">Watch on YouTube, opens in a new tab</span></div>
         </a></li>
         <li class="card"><a href="https://www.youtube.com/watch?v=Bh6YKFZIIGo" target="_blank" rel="noopener" data-cursor="PLAY">
-          <div class="thumb"><img src="https://i.ytimg.com/vi/Bh6YKFZIIGo/hqdefault.jpg" alt="" width="480" height="360" decoding="async"><span class="num">06</span><span class="play"></span></div>
+          <div class="thumb"><img src="https://i.ytimg.com/vi/Bh6YKFZIIGo/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" decoding="async"><span class="num">06</span><span class="play"></span></div>
           <div class="meta"><strong>“OLIVIA VALERE”</strong><span>Lagui x VEN1 x Sticky Type Beat</span><span class="dur">2:41</span><span class="sr">Watch on YouTube, opens in a new tab</span></div>
         </a></li>
         <li class="card"><a href="https://www.youtube.com/watch?v=C4Cd8wfMEpM" target="_blank" rel="noopener" data-cursor="PLAY">
-          <div class="thumb"><img src="https://i.ytimg.com/vi/C4Cd8wfMEpM/hqdefault.jpg" alt="" width="480" height="360" decoding="async"><span class="num">07</span><span class="play"></span></div>
+          <div class="thumb"><img src="https://i.ytimg.com/vi/C4Cd8wfMEpM/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" decoding="async"><span class="num">07</span><span class="play"></span></div>
           <div class="meta"><strong>“POMPEII”</strong><span>Shiro x Y4ska x Montana Type Beat</span><span class="sr">Watch on YouTube, opens in a new tab</span></div>
         </a></li>
         <li class="card"><a href="https://www.youtube.com/watch?v=TBk-tSiP3pc" target="_blank" rel="noopener" data-cursor="PLAY">
-          <div class="thumb"><img src="https://i.ytimg.com/vi/TBk-tSiP3pc/hqdefault.jpg" alt="" width="480" height="360" decoding="async"><span class="num">08</span><span class="play"></span></div>
+          <div class="thumb"><img src="https://i.ytimg.com/vi/TBk-tSiP3pc/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" decoding="async"><span class="num">08</span><span class="play"></span></div>
           <div class="meta"><strong>“00:42”</strong><span>Sarettii Type Beat</span><span class="sr">Watch on YouTube, opens in a new tab</span></div>
         </a></li>
         <li class="card card-end"><a href="https://www.youtube.com/@Osxrbeats" target="_blank" rel="noopener" data-cursor="OPEN">
@@ -637,10 +793,6 @@
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
 <script>
 (() => {
   const root = document.documentElement;
@@ -706,8 +858,80 @@
   });
 
   /* ---------- everything below needs GSAP; without it the page stays fully readable ---------- */
+  /* ===== lite path (phones, tablets): the animation is CSS, this only wires up the bits CSS can't do ===== */
+  function initLite() {
+    // desynchronise the equalizer bars
+    $$('.eq i').forEach((bar) => {
+      bar.style.setProperty('--d', (0.55 + Math.random() * 0.7).toFixed(2) + 's');
+      bar.style.setProperty('--dl', (-Math.random() * 1.2).toFixed(2) + 's');
+    });
+    // split the manifesto into words, keeping the highlighted phrases, so they can rise one by one
+    let wi = 0;
+    const wrap = (node) => [...node.childNodes].forEach((c) => {
+      if (c.nodeType === 1) return wrap(c);
+      if (c.nodeType !== 3) return;
+      const frag = document.createDocumentFragment();
+      c.textContent.split(/(\s+)/).forEach((t) => {
+        if (!t) return;
+        if (!t.trim()) { frag.appendChild(document.createTextNode(t)); return; }
+        const s = document.createElement('span');
+        s.className = 'w';
+        s.style.setProperty('--i', wi++);
+        s.textContent = t;
+        frag.appendChild(s);
+      });
+      c.replaceWith(frag);
+    });
+    wrap($('.manifesto p'));
+    $$('.card').forEach((c, i) => c.style.setProperty('--i', i % 2));
+    // reveal things as they scroll into view
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }), { rootMargin: '0px 0px -8% 0px', threshold: 0.1 });
+    $$('[data-reveal], .card, .manifesto p, .about, .foot-word').forEach((el) => io.observe(el));
+    // scroll progress bar
+    const bar = $('.progress');
+    let queued = false;
+    const paint = () => {
+      queued = false;
+      const max = root.scrollHeight - innerHeight;
+      bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, scrollY / max) : 0) + ')';
+    };
+    addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(paint); } }, { passive: true });
+    paint();
+    // marquee pause control
+    const track = $('.mq-track');
+    const mqBtn = $('.mq-toggle');
+    mqBtn.addEventListener('click', () => {
+      const paused = track.classList.toggle('paused');
+      mqBtn.setAttribute('aria-pressed', String(paused));
+      mqBtn.setAttribute('aria-label', paused ? 'Play scrolling text' : 'Pause scrolling text');
+    });
+    // stop the hero's endless loops once it has scrolled out of view
+    new IntersectionObserver(([e]) => root.classList.toggle('hero-off', !e.isIntersecting)).observe($('.hero'));
+    window.__ready = true;
+  }
+
+  if (root.classList.contains('lite')) { initLite(); return; }
+
+  /* ===== desktop path: load GSAP, ScrollTrigger, SplitText and Lenis in order, then start ===== */
+  const load = (src) => new Promise((done) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/' + src;
+    s.async = false;
+    s.onload = s.onerror = done;
+    document.head.appendChild(s);
+  });
+  Promise.all([
+    load('gsap@3.13.0/dist/gsap.min.js'), load('gsap@3.13.0/dist/ScrollTrigger.min.js'),
+    load('gsap@3.13.0/dist/SplitText.min.js'), load('lenis@1.1.20/dist/lenis.min.js'),
+  ]).then(startFull);
+
+  function startFull() {
   if (!(window.gsap && window.ScrollTrigger && window.SplitText)) {
-    root.classList.remove('anim');
+    root.classList.remove('anim', 'soft');
     return;
   }
   gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -716,7 +940,136 @@
   let lenis = null;
   const mm = gsap.matchMedia();
 
-  document.fonts.ready.then(() => {
+  /* ===== desktop 3D: ASCII loader, scene boot, and the choreography between sections ===== */
+  let scene3d = null;
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  // the loader's rotating sphere, drawn in characters (original: a lit sphere with sound-wave bands)
+  function asciiSphere(t) {
+    const W = 34, H = 23, R = H / 2 - 1, ramp = ' .:-=+*#%@';
+    const lx = Math.cos(t * 1.1), lz = Math.sin(t * 1.1), len = Math.hypot(lx, 0.45, lz);
+    let out = '';
+    for (let y = 0; y < H; y++) {
+      for (let x = 0; x < W; x++) {
+        const nx = ((x - W / 2) * 0.72) / R, ny = (y - H / 2) / R, d = nx * nx + ny * ny;
+        if (d > 1) { out += ' '; continue; }
+        const nz = Math.sqrt(1 - d);
+        let b = (nx * lx - ny * 0.45 + nz * lz) / len;
+        b += 0.18 * Math.sin(ny * 9 + t * 3) * nz;
+        b = Math.max(0, Math.min(0.999, b * 0.5 + 0.5));
+        out += ramp[Math.floor(b * ramp.length)];
+      }
+      out += '\n';
+    }
+    return out;
+  }
+
+  async function bootGL() {
+    const loader = $('.loader'), pre = $('.loader pre'), pctEl = $('.loader .pct b');
+    const showLoader = root.classList.contains('loading');
+    const t0 = performance.now();
+    let real = 0, shown = 0, raf = 0, api = null;
+    const bump = (v) => { real = Math.max(real, v); };
+    const spin = (now) => {
+      const t = (now - t0) / 1000;
+      shown += (Math.min(real, (t / 2.2) * 100) - shown) * 0.12;   // never faster than real progress, never under 2.2s
+      pctEl.textContent = String(Math.round(shown)).padStart(3, '0');
+      pre.textContent = asciiSphere(t);
+      raf = requestAnimationFrame(spin);
+    };
+    if (showLoader) raf = requestAnimationFrame(spin);
+    try {
+      bump(8);
+      const mod = await import('./js/scene.js');
+      bump(35);
+      api = await mod.createScene({ canvas: $('#gl'), reduce: isReduced(), onProgress: (p) => bump(35 + p * 55) });
+      const img = $('.forest img');
+      if (img && !img.complete) await Promise.race([new Promise((r) => { img.onload = img.onerror = r; }), sleep(1500)]);
+      bump(100);
+    } catch (err) {
+      console.warn('3D scene unavailable, using the CSS version instead.', err);
+      api = null;
+      root.classList.remove('gl');
+    }
+    if (showLoader) {
+      while (api && shown < 99.2) await sleep(40);
+      loader.classList.add('out');
+      await sleep(850);
+    }
+    cancelAnimationFrame(raf);
+    root.classList.remove('loading');
+    return api;
+  }
+
+  /* the speaker glides between poses as you move through the page. Nothing is pinned, scrolling never stops. */
+  function wireScene(api, reduce) {
+    const S = api.state;
+    const P = {
+      hero:      { x: 2.4,  y: 0.1,  z: 0,    s: 1,    ry: -0.25, aur: 1,    hue: 0,   dust: 1,   dim: 1,    glow: 1 },
+      manifesto: { x: 0,    y: 0,    z: -4.6, s: 1.95, ry: 0,     aur: 1.2,  hue: 0,   dust: 1.2, dim: 0.22, glow: 0.5 },
+      beats:     { x: 4.3,  y: 2.5,  z: -1.2, s: 0.5,  ry: 0.3,   aur: 0.55, hue: 0.45, dust: 0.7, dim: 0.8,  glow: 0.9 },
+      about:     { x: -2.7, y: 0,    z: 0,    s: 1.15, ry: 0.55,  aur: 0.95, hue: 1,   dust: 1,   dim: 1,    glow: 1 },
+      credit:    { x: 0,    y: 0.1,  z: -4.6, s: 1.9,  ry: -0.2,  aur: 0.9,  hue: 1.4, dust: 0.9, dim: 0.22, glow: 0.5 },
+      contact:   { x: 3.5,  y: -1.0, z: -0.6, s: 1.05, ry: -0.35, aur: 1.2,  hue: 2,   dust: 1.1, dim: 0.5,  glow: 1 },
+    };
+    let introDone = reduce, pending = 'hero';
+    const go = (name) => {
+      pending = name;
+      if (!introDone) return;
+      if (reduce) { Object.assign(S, P[name]); api.requestRender(); }
+      else gsap.to(S, { ...P[name], duration: 2, ease: 'power3.inOut', overwrite: true });
+    };
+    if (reduce) Object.assign(S, P.hero);
+    else {
+      gsap.fromTo(S, { s: 0.25, aur: 0, dust: 0, glow: 0 }, { ...P.hero, duration: 3, ease: 'expo.out', overwrite: true });
+      gsap.delayedCall(2.8, () => { introDone = true; go(pending); });
+    }
+    [['.hero', 'hero'], ['.manifesto', 'manifesto'], ['.beats', 'beats'], ['.about', 'about'], ['.credit', 'credit'], ['.contact', 'contact']]
+      .forEach(([sel, name]) => ScrollTrigger.create({ trigger: sel, start: 'top 55%', end: 'bottom 55%', onToggle: (self) => self.isActive && go(name) }));
+    ScrollTrigger.create({ start: 0, end: 'max', onUpdate: (self) => api.setScroll(self.scroll()) });
+
+    // hovering a beat makes the speaker kick and tints the aurora
+    const offs = [];
+    if (!reduce) {
+      $$('.card').forEach((card, i) => {
+        const enter = () => { api.kick(1); gsap.to(S, { hue: 0.1 + (i % 3) * 0.6, duration: 0.9, overwrite: 'auto' }); };
+        const leave = () => gsap.to(S, { hue: P.beats.hue, duration: 1.4, overwrite: 'auto' });
+        card.addEventListener('pointerenter', enter);
+        card.addEventListener('pointerleave', leave);
+        offs.push(() => { card.removeEventListener('pointerenter', enter); card.removeEventListener('pointerleave', leave); });
+      });
+    }
+    api.start();
+    return () => offs.forEach((f) => f());
+  }
+
+  /* glowing pill nav: a highlight slides to the hovered link and rests on the section you are in */
+  function setupPill(reduce) {
+    const wrap = $('.nav-links');
+    if (!wrap || getComputedStyle(wrap).display === 'none') return;
+    const ind = Object.assign(document.createElement('span'), { className: 'pill-ind' });
+    wrap.prepend(ind);
+    const links = $$('a', wrap);
+    let active = null;
+    const to = (a) => gsap.to(ind, a
+      ? { x: a.offsetLeft, width: a.offsetWidth, opacity: 1, duration: reduce ? 0.01 : 0.5, ease: 'power3.out', overwrite: true }
+      : { opacity: 0, duration: reduce ? 0.01 : 0.3, overwrite: true });
+    links.forEach((a) => { a.addEventListener('pointerenter', () => to(a)); a.addEventListener('focus', () => to(a)); });
+    wrap.addEventListener('pointerleave', () => to(active));
+    wrap.addEventListener('focusout', () => to(active));
+    ['#beats', '#about', '#credit', '#contact'].forEach((id) => {
+      const link = links.find((a) => a.getAttribute('href') === id);
+      ScrollTrigger.create({
+        trigger: id, start: 'top 50%', end: 'bottom 50%',
+        onToggle: (s) => { if (s.isActive) { active = link; to(link); } else if (active === link) { active = null; to(null); } },
+      });
+    });
+  }
+
+  const glReady = root.classList.contains('gl') ? bootGL() : Promise.resolve(null);
+  Promise.all([Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 1200))]), glReady]).then(([, glScene]) => {
+    scene3d = glScene;
+    setupPill(isReduced());
 
     /* ===== main page: motion (full) or reduced (Tier 2 fades only) ===== */
     mm.add({
@@ -727,6 +1080,7 @@
       const fine = ctx.conditions.fine;
       root.classList.toggle('anim', !reduce);
       root.classList.toggle('soft', reduce);
+      const unwire = scene3d ? wireScene(scene3d, reduce) : null;
 
       // thin scroll progress bar: tied to scroll, no displacement, kept for everyone
       gsap.to('.progress', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: true } });
@@ -774,10 +1128,11 @@
         });
 
         window.__ready = true;
-        return () => calmWords.revert();
+        return () => { calmWords.revert(); if (unwire) unwire(); };
       }
 
       const cleanups = [];
+      if (unwire) cleanups.push(unwire);
       const loops = [];
 
       /* ---- smooth scroll, driven by GSAP's ticker so ScrollTrigger stays in sync ---- */
@@ -1038,6 +1393,7 @@
     });
 
   });
+  } // end startFull
 })();
 </script>
 </body>
