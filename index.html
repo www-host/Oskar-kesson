@@ -429,7 +429,8 @@
   #gl { position: fixed; inset: 0; z-index: -1; display: none; width: 100%; height: 100%; pointer-events: none; }
   html.gl #gl { display: block; }
   .gl .hero { background: transparent; }
-  .gl .sky { display: none; }
+  .gl .sky, .gl .forest, .gl .eq { display: none; }
+  .gl .scrollhint { bottom: 28px; }
   .gl .manifesto .glow { display: none; }
   .gl .about-visual { visibility: hidden; }
   .gl .nav { background: none; }
@@ -629,7 +630,7 @@
     </div>
 
     <div class="forest" aria-hidden="true">
-      <img src="pics/forest.jpeg" alt="" width="2400" height="580" fetchpriority="high" decoding="async">
+      <img src="pics/forest.jpeg" alt="" width="2400" height="580" loading="lazy" decoding="async">
     </div>
 
     <div class="wrap hero-inner">
@@ -983,8 +984,6 @@
       const mod = await import('./js/scene.js');
       bump(35);
       api = await mod.createScene({ canvas: $('#gl'), reduce: isReduced(), onProgress: (p) => bump(35 + p * 55) });
-      const img = $('.forest img');
-      if (img && !img.complete) await Promise.race([new Promise((r) => { img.onload = img.onerror = r; }), sleep(1500)]);
       bump(100);
     } catch (err) {
       console.warn('3D scene unavailable, using the CSS version instead.', err);
@@ -1106,7 +1105,7 @@
         calm.push(gsap.timeline({ repeat: -1, repeatDelay: 0.5, delay: 2 })
           .to(rings, { opacity: (i) => 0.5 - i * 0.1, duration: 0.3, stagger: 0.14, ease: 'power2.out' }, 0)
           .to(rings, { opacity: 0, duration: 1.1, stagger: 0.14, ease: 'power2.in' }, 0.3));
-        $$('.eq i').forEach((bar) => calm.push(gsap.fromTo(bar, { opacity: 0.35 }, {
+        if (!root.classList.contains('gl')) $$('.eq i').forEach((bar) => calm.push(gsap.fromTo(bar, { opacity: 0.35 }, {
           opacity: gsap.utils.random(0.6, 1), duration: gsap.utils.random(0.6, 1.4), delay: gsap.utils.random(0, 1),
           ease: 'sine.inOut', repeat: -1, yoyo: true,
         })));
@@ -1212,7 +1211,7 @@
       groove.to({}, { duration: 1.6 }, 0);
       loops.push(groove);
       loops.push(gsap.to('.scrollhint span', { y: 6, duration: 0.9, ease: 'sine.inOut', repeat: -1, yoyo: true }));
-      $$('.eq i').forEach((bar) => {
+      if (!root.classList.contains('gl')) $$('.eq i').forEach((bar) => {
         loops.push(gsap.fromTo(bar, { scaleY: 0.14 }, {
           scaleY: () => gsap.utils.random(0.4, 1),
           duration: gsap.utils.random(0.4, 0.9), delay: gsap.utils.random(0, 0.6),
