@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Osxr Beats | Type beats &amp; instrumentals</title>
-<meta name="description" content="Type beats and instrumentals from the north, produced fresh every week by Osxr Beats. Free for non-profit use.">
+<meta name="description" content="Type beats and instrumentals from the north, produced fresh every week by Osxr Beats.">
 <meta name="theme-color" content="#050a14">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23050a14'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%238ddcff' stroke-width='2.5'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -182,10 +182,37 @@
   .ring.r1 { inset: -8%; border-style: dashed; border-color: rgba(141, 220, 255, 0.22); }
   .ring.r2 { inset: -20%; border-color: rgba(141, 220, 255, 0.32) rgba(141, 220, 255, 0) rgba(141, 220, 255, 0.32) rgba(141, 220, 255, 0); }
   .ring.r3 { inset: -34%; border-color: rgba(95, 240, 192, 0.26) rgba(95, 240, 192, 0.26) rgba(95, 240, 192, 0) rgba(95, 240, 192, 0); }
+  /* speaker: the orb is the cone, each beat punches it and pushes a wave outwards */
+  .orbpulse { position: absolute; inset: 0; will-change: transform; }
+  .waves { position: absolute; inset: 0; pointer-events: none; }
+  .waves i {
+    position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid rgba(141, 220, 255, 0.55);
+    box-shadow: 0 0 40px rgba(141, 220, 255, 0.18), inset 0 0 40px rgba(141, 220, 255, 0.1); will-change: transform, opacity;
+  }
+  /* static fallback = frozen waves (reduced motion, or before the beat starts) */
+  .waves i:nth-child(1) { transform: scale(1.22); opacity: 0.3; }
+  .waves i:nth-child(2) { transform: scale(1.48); opacity: 0.2; }
+  .waves i:nth-child(3) { transform: scale(1.78); opacity: 0.12; }
+  .waves i:nth-child(4) { transform: scale(2.1); opacity: 0.06; }
+  .anim .waves i { opacity: 0; }
+  .orbglow {
+    position: absolute; inset: -14%; border-radius: 50%; opacity: 0.45; will-change: opacity;
+    background: radial-gradient(circle, rgba(141, 220, 255, 0.5) 0%, rgba(141, 220, 255, 0.14) 42%, rgba(141, 220, 255, 0) 70%);
+  }
+  .grooves { position: absolute; inset: 0; border-radius: 50%; background: repeating-radial-gradient(circle at 50% 50%, transparent 0 10px, rgba(141, 220, 255, 0.07) 11px 12px); }
+  .surround { position: absolute; inset: 12%; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.22); box-shadow: inset 0 0 30px rgba(5, 10, 20, 0.5), 0 0 24px rgba(141, 220, 255, 0.14); will-change: transform; }
+  .cap {
+    position: absolute; inset: 34%; border-radius: 50%; border: 1px solid rgba(141, 220, 255, 0.4); will-change: transform;
+    background: radial-gradient(circle at 38% 32%, rgba(255, 255, 255, 0.7), rgba(141, 220, 255, 0.32) 38%, rgba(6, 13, 26, 0.05) 72%);
+    box-shadow: inset -10px -14px 30px rgba(0, 0, 0, 0.45), 0 0 40px rgba(141, 220, 255, 0.2);
+  }
 
-  .mtns { position: absolute; inset: auto 0 0 0; height: 48%; pointer-events: none; }
-  .mtn { position: absolute; inset: 0; will-change: transform; }
-  .mtn svg { position: absolute; left: 0; bottom: 0; width: 100%; height: 100%; }
+  .forest {
+    position: absolute; inset: auto 0 0 0; height: clamp(220px, 27vw, 430px); overflow: hidden; pointer-events: none;
+    will-change: transform;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 42%); mask-image: linear-gradient(180deg, transparent 0%, #000 42%);
+  }
+  .forest img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; filter: brightness(0.82) saturate(1.1); }
 
   .hero-inner { position: relative; z-index: 2; width: 100%; padding-top: 110px; padding-bottom: clamp(110px, 20vh, 200px); }
   .hero h1 {
@@ -233,13 +260,19 @@
   .mq-toggle[aria-pressed="true"] .ico-play { display: block; }
 
   /* ---------- manifesto ---------- */
-  .manifesto { position: relative; min-height: 100vh; min-height: 100svh; display: grid; place-items: center; overflow: hidden; padding: 120px 0; }
+  .manifesto { position: relative; display: grid; place-items: center; overflow: hidden; padding: clamp(110px, 18vw, 240px) 0; }
   .manifesto .glow {
     position: absolute; left: 50%; top: 50%; z-index: -1; width: 80vmin; height: 80vmin; margin: -40vmin 0 0 -40vmin; border-radius: 50%;
     background: radial-gradient(circle, rgba(95, 240, 192, 0.28), rgba(95, 240, 192, 0) 65%); filter: blur(30px); opacity: 0.4;
   }
   .manifesto p { max-width: 15em; font-weight: 600; font-size: clamp(34px, 6vw, 96px); line-height: 1.02; letter-spacing: -0.045em; }
-  .manifesto em { font-style: normal; color: var(--ice); }
+  .manifesto em { position: relative; font-style: normal; color: var(--ice); }
+  .manifesto em::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0.02em; height: 0.06em; border-radius: 2px;
+    background: linear-gradient(90deg, var(--aurora), var(--ice));
+    transform: scaleX(var(--u, 1)); transform-origin: 0 50%;
+  }
+  .manifesto .ml { overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
 
   /* ---------- beats ---------- */
   .beats { position: relative; padding: clamp(80px, 12vw, 160px) 0 clamp(80px, 10vw, 140px); }
@@ -409,7 +442,7 @@
     <div class="nav-links">
       <a href="#beats">Beats</a>
       <a href="#about">About</a>
-      <a href="#credit">Free use</a>
+      <a href="#credit">Licensing</a>
       <a href="#contact">Contact</a>
     </div>
   </nav>
@@ -428,36 +461,20 @@
         <i class="l3"><b></b></i>
       </div>
       <div class="orbwrap" data-depth="0.7">
-        <div class="orb">
-          <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
+        <div class="waves"><i></i><i></i><i></i><i></i></div>
+        <div class="orbpulse">
+          <span class="orbglow"></span>
+          <div class="orb">
+            <span class="grooves"></span>
+            <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
+            <span class="surround"></span><span class="cap"></span>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="mtns" aria-hidden="true">
-      <div class="mtn m1" data-far="18">
-        <svg viewBox="0 0 1440 400" preserveAspectRatio="none">
-          <defs><linearGradient id="gm1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a3860"/><stop offset="1" stop-color="#0a1830"/></linearGradient></defs>
-          <path fill="url(#gm1)" d="M0,400 L0,250 L90,200 L170,240 L260,150 L350,220 L430,180 L540,260 L640,170 L730,230 L820,140 L930,230 L1010,190 L1120,250 L1220,170 L1320,230 L1440,200 L1440,400 Z"/>
-        </svg>
-      </div>
-      <div class="mtn m2" data-far="10">
-        <svg viewBox="0 0 1440 400" preserveAspectRatio="none">
-          <defs><linearGradient id="gm2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d213f"/><stop offset="1" stop-color="#060e1d"/></linearGradient></defs>
-          <path fill="url(#gm2)" d="M0,400 L0,300 L120,250 L210,290 L330,210 L450,280 L560,240 L690,310 L800,250 L920,300 L1040,230 L1170,300 L1290,260 L1440,300 L1440,400 Z"/>
-        </svg>
-      </div>
-      <div class="mtn m3" data-far="0">
-        <svg viewBox="0 0 1440 400" preserveAspectRatio="xMidYMax slice">
-          <defs>
-            <pattern id="pineA" width="97" height="110" patternUnits="userSpaceOnUse" y="290"><path transform="translate(24 0)" fill="#040a16" d="M24 0 L38 34 L31 34 L44 64 L35 64 L48 96 L0 96 L13 64 L4 64 L17 34 L10 34 Z"/></pattern>
-            <pattern id="pineB" width="64" height="150" patternUnits="userSpaceOnUse" y="250"><path fill="#030710" d="M32 0 L50 44 L41 44 L58 84 L46 84 L64 130 L0 130 L18 84 L6 84 L23 44 L14 44 Z"/></pattern>
-          </defs>
-          <rect x="0" y="290" width="1440" height="110" fill="url(#pineA)"/>
-          <rect x="0" y="250" width="1440" height="150" fill="url(#pineB)"/>
-          <rect x="0" y="376" width="1440" height="24" fill="#030710"/>
-        </svg>
-      </div>
+    <div class="forest" aria-hidden="true">
+      <img src="pics/forest.jpeg" alt="" width="2400" height="580" fetchpriority="high" decoding="async">
     </div>
 
     <div class="stamp" aria-hidden="true" data-hero>NORDIC LIGHT · VOL. 01</div>
@@ -585,9 +602,9 @@
   <section class="credit" id="credit" aria-labelledby="credit-title">
     <div class="wrap credit-grid">
       <div data-reveal>
-        <p class="eyebrow">Free use</p>
-        <h2 id="credit-title">Free for non-profit use.</h2>
-        <p>Most beats are free to use for non-profit projects. Just credit the producer in your title or description. Need it for something else? Get in touch.</p>
+        <p class="eyebrow">Licensing</p>
+        <h2 id="credit-title">Want to use a beat?</h2>
+        <p>The beats are not free to use. Get in touch to license one, and always credit the producer in your title or description.</p>
       </div>
       <button class="copy" type="button" data-copy="Prod. Osxr Beats" data-reveal>
         <span class="copy-code">Prod. Osxr Beats</span>
@@ -754,7 +771,7 @@
       tl.fromTo('.hero .sky', { opacity: 0 }, { opacity: 1, duration: 1.8, ease: 'power1.out' }, 0)
         .fromTo('.aurora i', { yPercent: 28, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 2.4, stagger: 0.25 }, 0.1)
         .fromTo('.orb', { scale: 0.55, opacity: 0 }, { scale: 1, opacity: 1, duration: 2, ease: 'expo.out' }, 0.3)
-        .fromTo('.mtn svg', { yPercent: 30 }, { yPercent: 0, duration: 1.8, stagger: 0.14 }, 0.2)
+        .fromTo('.forest img', { yPercent: 28, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 2.2 }, 0.2)
         .fromTo('.nav > *', { y: -24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.08 }, 0.7)
         .fromTo('.hero .eyebrow', { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.7 }, 0.75)
         .fromTo(split.chars, { yPercent: 118 }, { yPercent: 0, duration: 1.15, stagger: 0.045, ease: 'expo.out' }, 0.85)
@@ -774,7 +791,27 @@
       loops.push(gsap.to('.ring.r1', { rotation: 360, duration: 90, ease: 'none', repeat: -1 }));
       loops.push(gsap.to('.ring.r2', { rotation: -360, duration: 140, ease: 'none', repeat: -1 }));
       loops.push(gsap.to('.ring.r3', { rotation: 360, duration: 200, ease: 'none', repeat: -1 }));
-      loops.push(gsap.to('.orb', { scale: 1.03, duration: 6, ease: 'sine.inOut', repeat: -1, yoyo: true, delay: 2.4 }));
+      /* the orb is a speaker: every kick punches the cone and sends a sound wave out of it */
+      const rings = $$('.waves i');
+      gsap.set(rings, { scale: 1, opacity: 0 });
+      let ringIdx = 0;
+      const punch = (target, grow, up, down, ease) => gsap.to(target, {
+        keyframes: [{ scale: 1 + grow, duration: up, ease: 'power3.out' }, { scale: 1, duration: down, ease }],
+        overwrite: true,
+      });
+      const kick = (amp) => {
+        gsap.fromTo(rings[ringIdx++ % rings.length],
+          { scale: 1, opacity: 0.18 + 0.4 * amp },
+          { scale: 1.5 + 0.8 * amp, opacity: 0, duration: 2.1, ease: 'power2.out', overwrite: true });
+        punch('.orbpulse', 0.05 * amp, 0.06, 0.7, 'elastic.out(1, 0.3)');
+        punch('.cap', 0.2 * amp, 0.05, 0.85, 'elastic.out(1, 0.25)');
+        punch('.surround', 0.06 * amp, 0.08, 0.7, 'elastic.out(1, 0.3)');
+        gsap.fromTo('.orbglow', { opacity: 0.5 + 0.4 * amp }, { opacity: 0.45, duration: 0.9, ease: 'power2.out', overwrite: true });
+      };
+      const groove = gsap.timeline({ repeat: -1, delay: 2.4 });
+      [[0, 1], [0.27, 0.55], [0.8, 0.9], [1.07, 0.5]].forEach(([t, amp]) => groove.call(kick, [amp], t));
+      groove.to({}, { duration: 1.6 }, 0);
+      loops.push(groove);
       loops.push(gsap.to('.scrollhint span', { y: 6, duration: 0.9, ease: 'sine.inOut', repeat: -1, yoyo: true }));
       $$('.eq i').forEach((bar) => {
         loops.push(gsap.fromTo(bar, { scaleY: 0.14 }, {
@@ -792,7 +829,7 @@
       const heroScrub = { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true };
       gsap.to('.hero-inner', { yPercent: -14, opacity: 0, ease: 'none', scrollTrigger: heroScrub });
       gsap.to('.hero .sky', { yPercent: 16, ease: 'none', scrollTrigger: heroScrub });
-      $$('.mtn').forEach((m) => gsap.to(m, { yPercent: +m.dataset.far, ease: 'none', scrollTrigger: heroScrub }));
+      gsap.to('.forest', { yPercent: 12, ease: 'none', scrollTrigger: heroScrub });
 
       /* ---- pointer parallax (mouse only) ---- */
       if (fine) {
@@ -900,15 +937,21 @@
         },
       });
 
-      /* ---- manifesto: pinned, words light up as you scroll ---- */
-      const words = SplitText.create('.manifesto p', { type: 'words' });
-      cleanups.push(() => words.revert());
-      const wStep = 0.12;
+      /* ---- manifesto: not pinned, so scrolling never stalls. Words rise out of line masks when it
+              enters view, the highlighted phrases get an underline drawn in, and the glow breathes with scroll ---- */
+      const manifesto = SplitText.create('.manifesto p', { type: 'lines,words', linesClass: 'ml' });
+      cleanups.push(() => manifesto.revert());
+      gsap.set('.manifesto em', { '--u': 0 });
       const mtl = gsap.timeline({
-        scrollTrigger: { trigger: '.manifesto', start: 'top top', end: '+=130%', pin: true, scrub: 0.6, refreshPriority: 3 },
+        scrollTrigger: { trigger: '.manifesto p', start: 'top 78%', toggleActions: 'play none none none' },
       });
-      mtl.fromTo(words.words, { opacity: 0.14 }, { opacity: 1, stagger: wStep, duration: 1, ease: 'none' }, 0)
-         .fromTo('.manifesto .glow', { scale: 0.5, opacity: 0 }, { scale: 1.35, opacity: 0.7, duration: words.words.length * wStep, ease: 'none' }, 0);
+      mtl.fromTo(manifesto.words, { yPercent: 115, rotation: 5, opacity: 0 },
+                 { yPercent: 0, rotation: 0, opacity: 1, duration: 1, ease: 'expo.out', stagger: 0.045 }, 0)
+         .to('.manifesto em', { '--u': 1, duration: 0.9, ease: 'power3.inOut', stagger: 0.25 }, 0.9);
+      gsap.fromTo('.manifesto .glow', { scale: 0.6, opacity: 0.1 }, {
+        scale: 1.3, opacity: 0.6, ease: 'none',
+        scrollTrigger: { trigger: '.manifesto', start: 'top bottom', end: 'bottom top', scrub: true },
+      });
 
       /* ---- generic reveals ---- */
       ScrollTrigger.batch('[data-reveal]', {
