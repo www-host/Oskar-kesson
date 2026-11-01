@@ -3,146 +3,981 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Osxr Beats</title>
+<title>Osxr Beats | Type beats &amp; instrumentals</title>
+<meta name="description" content="Type beats and instrumentals from the north, produced fresh every week by Osxr Beats. Free for non-profit use.">
+<meta name="theme-color" content="#050a14">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23050a14'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%238ddcff' stroke-width='2.5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* `anim` hides first-paint states that GSAP reveals. It is only set when motion is allowed,
+     and removed again if the animation libraries fail to load. */
+  (function () {
+    var r = document.documentElement;
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches || /[?&]reduce=1/.test(location.search);
+    if (!reduce) r.classList.add('anim');
+    setTimeout(function () { if (!window.__ready) r.classList.remove('anim'); }, 6000);
+  })();
+</script>
 <style>
   :root {
-    --bg: #0d0d0f;
-    --bg-alt: #17171b;
-    --text: #f2f2f2;
-    --muted: #9a9aa2;
-    --accent: #ff3b3b;
+    --bg: #050a14;
+    --bg-2: #08111f;
+    --ink: #eaf4ff;
+    --muted: #93a6c0;
+    --ice: #8ddcff;
+    --aurora: #5ff0c0;
+    --violet: #8f86ff;
+    --line: #1b2a42;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --font-display: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    --gutter: clamp(20px, 5.4vw, 80px);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-stopped { overflow: hidden; }
   body {
-    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: var(--bg);
-    color: var(--text);
+    color: var(--ink);
+    font-family: var(--font-display);
     line-height: 1.5;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
   }
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem 2rem;
-    border-bottom: 1px solid #222;
+  img, svg { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  ul { list-style: none; }
+  ::selection { background: var(--ice); color: #04101c; }
+  :focus-visible { outline: 2px solid var(--ice); outline-offset: 3px; border-radius: 4px; }
+  .wrap { padding-inline: var(--gutter); max-width: 1600px; margin-inline: auto; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .skip {
+    position: fixed; left: 16px; top: -60px; z-index: 200; padding: 10px 16px;
+    background: var(--ice); color: #04101c; font: 500 12px var(--font-mono); border-radius: 999px;
+    transition: top 0.2s var(--ease-out);
   }
-  .logo { font-weight: 800; font-size: 1.3rem; letter-spacing: 1px; }
-  .logo span { color: var(--accent); }
-  nav a {
-    color: var(--muted);
-    text-decoration: none;
-    margin-left: 1.5rem;
-    font-size: 0.95rem;
+  .skip:focus { top: 14px; }
+  .eyebrow {
+    display: flex; align-items: center; gap: 12px;
+    font: 500 11px/1 var(--font-mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--ice);
   }
-  nav a:hover { color: var(--text); }
-  .hero {
-    text-align: center;
-    padding: 5rem 1.5rem 4rem;
+  .eyebrow::before { content: ""; width: 28px; height: 1px; background: currentColor; }
+
+  /* first-paint states (only when motion is allowed) */
+  .anim [data-hero], .anim [data-reveal], .anim .hero .sky, .anim .nav > * { opacity: 0; }
+  .anim [data-hero] { visibility: hidden; }
+  .anim .hero h1 { visibility: hidden; }
+
+  /* ---------- progress, cursor, toast ---------- */
+  .progress {
+    position: fixed; inset: 0 0 auto 0; height: 2px; z-index: 90;
+    background: linear-gradient(90deg, var(--aurora), var(--ice));
+    transform: scaleX(0); transform-origin: 0 50%;
   }
-  .hero h1 {
-    font-size: clamp(2.2rem, 6vw, 4rem);
-    font-weight: 900;
-    letter-spacing: -1px;
+  .cursor {
+    position: fixed; left: 0; top: 0; z-index: 95; width: 84px; height: 84px; margin: -42px 0 0 -42px;
+    border: 1px solid var(--ice); border-radius: 50%; background: var(--ice);
+    display: grid; place-items: center; pointer-events: none;
+    scale: 0.16; opacity: 0;
+    transition: scale 0.35s var(--ease-out), background-color 0.35s, opacity 0.25s;
   }
-  .hero h1 span { color: var(--accent); }
-  .hero p {
-    color: var(--muted);
-    margin-top: 1rem;
-    font-size: 1.1rem;
+  .cursor.on { opacity: 0.9; }
+  .cursor.is-hover { scale: 1; background-color: rgba(141, 220, 255, 0.16); }
+  .cursor span { font: 500 11px var(--font-mono); letter-spacing: 0.16em; color: var(--ice); opacity: 0; transition: opacity 0.2s; }
+  .cursor.is-hover span { opacity: 1; }
+  .toast {
+    position: fixed; left: 50%; bottom: 28px; z-index: 120; padding: 12px 20px;
+    background: #0c1a2e; border: 1px solid var(--line); border-radius: 999px;
+    font: 500 12px var(--font-mono); letter-spacing: 0.06em; color: var(--ink);
+    opacity: 0; visibility: hidden; transform: translate(-50%, 12px);
+    transition: opacity 0.15s ease-in, transform 0.15s ease-in, visibility 0s 0.15s;
   }
+  .toast.is-on {
+    opacity: 1; visibility: visible; transform: translate(-50%, 0);
+    transition: opacity 0.25s var(--ease-out), transform 0.25s var(--ease-out), visibility 0s;
+  }
+
+  /* ---------- nav + buttons ---------- */
+  .nav {
+    position: fixed; inset: 0 0 auto 0; z-index: 50; height: 84px; padding-inline: var(--gutter);
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(180deg, rgba(5, 10, 20, 0.85), rgba(5, 10, 20, 0));
+  }
+  .logo { font-weight: 700; font-size: 22px; letter-spacing: -0.06em; }
+  .logo b { color: var(--ice); }
+  .nav-links { display: flex; gap: 34px; font: 500 11px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: #b4c4da; }
+  .nav-links a { position: relative; padding: 8px 0; transition: color 0.2s; }
+  .nav-links a::after {
+    content: ""; position: absolute; inset: auto 0 2px; height: 1px; background: var(--ice);
+    transform: scaleX(0); transform-origin: 0 50%; transition: transform 0.35s var(--ease-out);
+  }
+  .nav-links a:hover, .nav-links a:focus-visible { color: var(--ink); }
+  .nav-links a:hover::after, .nav-links a:focus-visible::after { transform: scaleX(1); }
+
   .btn {
-    display: inline-block;
-    margin-top: 2rem;
-    padding: 0.8rem 1.8rem;
-    background: var(--accent);
-    color: #fff;
-    text-decoration: none;
-    border-radius: 999px;
-    font-weight: 600;
-    transition: transform 0.15s ease;
+    position: relative; display: inline-flex; align-items: center; gap: 8px; overflow: hidden; isolation: isolate;
+    padding: 15px 24px; border-radius: 999px; border: 1px solid transparent; cursor: pointer;
+    font: 500 11px/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase;
+    background: var(--ice); color: #04101c;
+    transition: scale 0.14s ease-out, color 0.25s, border-color 0.25s;
   }
-  .btn:hover { transform: scale(1.05); }
-  section { padding: 3rem 1.5rem; max-width: 900px; margin: 0 auto; }
-  h2 {
-    font-size: 1.6rem;
-    margin-bottom: 1.5rem;
-    text-align: center;
+  .btn::before {
+    content: ""; position: absolute; inset: 0; z-index: -1; background: var(--aurora);
+    transform: translateY(101%); transition: transform 0.4s var(--ease-out);
   }
-  .tracks {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.2rem;
+  .btn:hover::before, .btn:focus-visible::before { transform: none; }
+  .btn:active { scale: 0.96; }
+  .btn-ghost { background: transparent; color: var(--ink); border-color: rgba(141, 220, 255, 0.35); }
+  .btn-ghost::before { background: var(--ice); }
+  .btn-ghost:hover, .btn-ghost:focus-visible { color: #04101c; border-color: var(--ice); }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative; min-height: 100vh; min-height: 100svh; display: grid; align-items: center;
+    overflow: hidden; isolation: isolate;
+    background: radial-gradient(120% 80% at 70% 0%, #0b1c38 0%, var(--bg) 62%);
   }
-  .track {
-    background: var(--bg-alt);
-    border: 1px solid #26262b;
-    border-radius: 12px;
-    padding: 1.3rem;
+  .sky { position: absolute; inset: -6% 0 0; z-index: -1; }
+  .stars { position: absolute; inset: 0; }
+  .stars.s1 {
+    background-image:
+      radial-gradient(1.4px 1.4px at 8% 14%, #fff 50%, transparent 52%), radial-gradient(1px 1px at 17% 32%, #cfe9ff 50%, transparent 52%),
+      radial-gradient(1.6px 1.6px at 26% 9%, #fff 50%, transparent 52%), radial-gradient(1px 1px at 34% 24%, #cfe9ff 50%, transparent 52%),
+      radial-gradient(1.2px 1.2px at 47% 12%, #fff 50%, transparent 52%), radial-gradient(1px 1px at 55% 30%, #cfe9ff 50%, transparent 52%),
+      radial-gradient(1.5px 1.5px at 63% 8%, #fff 50%, transparent 52%), radial-gradient(1px 1px at 72% 22%, #cfe9ff 50%, transparent 52%),
+      radial-gradient(1.3px 1.3px at 81% 13%, #fff 50%, transparent 52%), radial-gradient(1px 1px at 90% 28%, #cfe9ff 50%, transparent 52%),
+      radial-gradient(1.2px 1.2px at 95% 7%, #fff 50%, transparent 52%), radial-gradient(1px 1px at 4% 41%, #cfe9ff 50%, transparent 52%);
   }
-  .track h3 { font-size: 1.05rem; margin-bottom: 0.4rem; }
-  .track p { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.8rem; }
-  .track a { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.9rem; }
-  .track a:hover { text-decoration: underline; }
-  footer {
-    text-align: center;
-    padding: 2.5rem 1.5rem;
-    color: var(--muted);
-    font-size: 0.85rem;
-    border-top: 1px solid #222;
+  .stars.s2 {
+    background-image:
+      radial-gradient(1px 1px at 12% 22%, #fff 50%, transparent 52%), radial-gradient(1.4px 1.4px at 21% 6%, #cfe9ff 50%, transparent 52%),
+      radial-gradient(1px 1px at 30% 38%, #fff 50%, transparent 52%), radial-gradient(1.2px 1.2px at 42% 19%, #cfe9ff 50%, transparent 52%),
+      radial-gradient(1px 1px at 51% 6%, #fff 50%, transparent 52%), radial-gradient(1.5px 1.5px at 59% 36%, #cfe9ff 50%, transparent 52%),
+      radial-gradient(1px 1px at 68% 15%, #fff 50%, transparent 52%), radial-gradient(1.2px 1.2px at 77% 34%, #cfe9ff 50%, transparent 52%),
+      radial-gradient(1px 1px at 86% 20%, #fff 50%, transparent 52%), radial-gradient(1.4px 1.4px at 93% 40%, #cfe9ff 50%, transparent 52%);
   }
-  footer a { color: var(--muted); }
+  .aurora { position: absolute; inset: 0; }
+  .aurora i { position: absolute; display: block; will-change: transform; }
+  .aurora b {
+    position: absolute; inset: 0; display: block; opacity: 0.85; will-change: transform;
+    filter: blur(44px); border-radius: 50% 50% 42% 42% / 60% 60% 40% 40%;
+  }
+  .aurora .l1 { left: 4%; top: -4%; width: 38%; height: 78%; }
+  .aurora .l1 b { background: linear-gradient(180deg, rgba(95, 240, 192, 0) 0%, rgba(95, 240, 192, 0.6) 42%, rgba(141, 220, 255, 0.28) 78%, rgba(141, 220, 255, 0) 100%); }
+  .aurora .l2 { left: 30%; top: -8%; width: 44%; height: 74%; }
+  .aurora .l2 b { background: linear-gradient(180deg, rgba(141, 220, 255, 0) 0%, rgba(141, 220, 255, 0.5) 45%, rgba(143, 134, 255, 0.3) 80%, rgba(143, 134, 255, 0) 100%); }
+  .aurora .l3 { left: 58%; top: 0; width: 40%; height: 66%; }
+  .aurora .l3 b { background: linear-gradient(180deg, rgba(143, 134, 255, 0) 0%, rgba(95, 240, 192, 0.42) 50%, rgba(95, 240, 192, 0) 100%); }
+  .orbwrap { position: absolute; right: 6%; top: 12%; width: min(42vw, 540px); aspect-ratio: 1; }
+  .orb {
+    position: relative; width: 100%; height: 100%; border-radius: 50%;
+    background: radial-gradient(circle at 36% 30%, #f4fbff 0%, #bfeaff 9%, #4f93c4 32%, #14304f 60%, #060d1a 78%);
+    box-shadow: inset -40px -50px 90px rgba(0, 0, 0, 0.6), 0 0 140px rgba(141, 220, 255, 0.22);
+  }
+  .ring { position: absolute; border-radius: 50%; border: 1px solid rgba(141, 220, 255, 0.3); }
+  .ring.r1 { inset: -8%; border-style: dashed; border-color: rgba(141, 220, 255, 0.22); }
+  .ring.r2 { inset: -20%; border-color: rgba(141, 220, 255, 0.32) rgba(141, 220, 255, 0) rgba(141, 220, 255, 0.32) rgba(141, 220, 255, 0); }
+  .ring.r3 { inset: -34%; border-color: rgba(95, 240, 192, 0.26) rgba(95, 240, 192, 0.26) rgba(95, 240, 192, 0) rgba(95, 240, 192, 0); }
+
+  .mtns { position: absolute; inset: auto 0 0 0; height: 48%; pointer-events: none; }
+  .mtn { position: absolute; inset: 0; will-change: transform; }
+  .mtn svg { position: absolute; left: 0; bottom: 0; width: 100%; height: 100%; }
+
+  .hero-inner { position: relative; z-index: 2; width: 100%; padding-top: 110px; padding-bottom: clamp(110px, 20vh, 200px); }
+  .hero h1 {
+    margin: 26px 0 30px; font-weight: 700; text-transform: uppercase;
+    font-size: clamp(68px, min(11.5vw, 17.5vh), 200px); letter-spacing: -0.065em;
+  }
+  .hero h1 .ln { display: block; overflow: hidden; line-height: 0.92; padding-inline: 0.02em; }
+  .hero h1 .ln.accent { color: var(--ice); }
+  .hero-foot { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 28px 56px; }
+  .intro { color: #b6c6dc; font-size: 17px; line-height: 1.6; max-width: 400px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .stamp {
+    position: absolute; right: calc(var(--gutter) * 0.5); top: 26%; z-index: 2; writing-mode: vertical-rl;
+    font: 500 10px var(--font-mono); letter-spacing: 0.22em; color: #a8daf5;
+  }
+  .fig { position: absolute; right: var(--gutter); bottom: clamp(88px, 17vh, 160px); z-index: 2; font: 500 10px var(--font-mono); letter-spacing: 0.16em; color: #9abbd1; }
+  .fig b { color: var(--ice); font-weight: 500; }
+  .scrollhint { position: absolute; left: var(--gutter); bottom: calc(clamp(70px, 14vh, 130px) + 14px); z-index: 3; font: 500 10px var(--font-mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+  .scrollhint span { display: inline-block; }
+  .eq {
+    position: absolute; left: var(--gutter); right: var(--gutter); bottom: 0; z-index: 1;
+    height: clamp(70px, 14vh, 130px); display: flex; align-items: flex-end; gap: clamp(2px, 0.3vw, 5px);
+  }
+  .eq i {
+    flex: 1; height: calc(var(--h) * 1%); transform: scaleY(0.75); transform-origin: 50% 100%; will-change: transform;
+    background: linear-gradient(0deg, var(--aurora), rgba(141, 220, 255, 0.12)); border-radius: 2px 2px 0 0;
+  }
+
+  /* ---------- marquee ---------- */
+  .marquee { position: relative; overflow: hidden; border-block: 1px solid var(--line); padding: 20px 0; }
+  .mq-track { display: flex; width: max-content; will-change: transform; }
+  .mq-group { display: flex; align-items: center; gap: 28px; padding-right: 28px; white-space: nowrap; font: 500 12px var(--font-mono); letter-spacing: 0.2em; text-transform: uppercase; color: #b3c3d8; }
+  .mq-group i { font-style: normal; color: var(--aurora); }
+  .mq-toggle {
+    position: absolute; right: var(--gutter); top: 50%; z-index: 2; width: 34px; height: 34px; margin-top: -17px;
+    border: 1px solid rgba(141, 220, 255, 0.35); border-radius: 50%; background: var(--bg); color: var(--ice);
+    box-shadow: 0 0 0 14px var(--bg); cursor: pointer; display: none; place-items: center;
+    transition: scale 0.14s ease-out, background-color 0.2s;
+  }
+  .anim .mq-toggle { display: grid; }
+  .mq-toggle:hover { background: #0e2036; }
+  .mq-toggle:active { scale: 0.92; }
+  .mq-toggle .ico-play { display: none; }
+  .mq-toggle[aria-pressed="true"] .ico-pause { display: none; }
+  .mq-toggle[aria-pressed="true"] .ico-play { display: block; }
+
+  /* ---------- manifesto ---------- */
+  .manifesto { position: relative; min-height: 100vh; min-height: 100svh; display: grid; place-items: center; overflow: hidden; padding: 120px 0; }
+  .manifesto .glow {
+    position: absolute; left: 50%; top: 50%; z-index: -1; width: 80vmin; height: 80vmin; margin: -40vmin 0 0 -40vmin; border-radius: 50%;
+    background: radial-gradient(circle, rgba(95, 240, 192, 0.28), rgba(95, 240, 192, 0) 65%); filter: blur(30px); opacity: 0.4;
+  }
+  .manifesto p { max-width: 15em; font-weight: 600; font-size: clamp(34px, 6vw, 96px); line-height: 1.02; letter-spacing: -0.045em; }
+  .manifesto em { font-style: normal; color: var(--ice); }
+
+  /* ---------- beats ---------- */
+  .beats { position: relative; padding: clamp(80px, 12vw, 160px) 0 clamp(80px, 10vw, 140px); }
+  .beats.is-pinned { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-block: 96px 48px; overflow: hidden; }
+  .beats-head { width: 100%; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: clamp(28px, 4vw, 56px); }
+  .beats-head h2 { margin-top: 16px; font-weight: 700; font-size: clamp(40px, 6vw, 92px); line-height: 0.95; letter-spacing: -0.055em; }
+  .beats-meta { display: grid; gap: 12px; justify-items: end; font: 500 11px var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .counter b { color: var(--ice); font-weight: 500; }
+  .beats-progress { width: 140px; height: 2px; background: var(--line); overflow: hidden; }
+  .beats-progress i { display: block; height: 100%; background: linear-gradient(90deg, var(--aurora), var(--ice)); transform: scaleX(0.11); transform-origin: 0 50%; }
+  .track-wrap { overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: thin; scrollbar-color: var(--line) transparent; padding-bottom: 18px; }
+  .beats.is-pinned .track-wrap { overflow: visible; padding-bottom: 0; }
+  .track { display: flex; gap: clamp(14px, 2vw, 28px); width: max-content; padding-inline: var(--gutter); will-change: transform; }
+  .card { flex: none; width: clamp(280px, 31vw, 480px); scroll-snap-align: start; }
+  .card > a {
+    position: relative; display: flex; flex-direction: column; height: 100%;
+    background: var(--bg-2); border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
+    transition: border-color 0.3s, scale 0.14s ease-out;
+  }
+  .card > a::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
+    box-shadow: 0 0 0 1px rgba(95, 240, 192, 0.55), 0 30px 70px -24px rgba(95, 240, 192, 0.45);
+    transition: opacity 0.35s;
+  }
+  .card > a:hover, .card > a:focus-visible { border-color: transparent; }
+  .card > a:hover::after, .card > a:focus-visible::after { opacity: 1; }
+  .card > a:active { scale: 0.985; }
+  .thumb { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: radial-gradient(ellipse at 50% 60%, #1c4468, #0a1626 70%); }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; scale: 1.12; transition: scale 0.7s var(--ease-out); }
+  .card > a:hover .thumb img, .card > a:focus-visible .thumb img { scale: 1.2; }
+  .thumb::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8, 24, 48, 0.28), rgba(5, 10, 20, 0.2) 45%, rgba(5, 10, 20, 0.82)); }
+  .num { position: absolute; left: 14px; top: 12px; z-index: 2; font: 500 11px var(--font-mono); letter-spacing: 0.16em; color: var(--ice); }
+  .play {
+    position: absolute; right: 14px; bottom: 14px; z-index: 2; width: 48px; height: 48px; border-radius: 50%;
+    background: var(--ice); display: grid; place-items: center; opacity: 0; scale: 0.7;
+    transition: opacity 0.2s, scale 0.35s var(--ease-out);
+  }
+  .play::before { content: ""; margin-left: 3px; border-left: 12px solid #04101c; border-block: 8px solid transparent; }
+  .card > a:hover .play, .card > a:focus-visible .play { opacity: 1; scale: 1; }
+  .play:active { scale: 0.92; }
+  @media (hover: none) { .play { opacity: 1; scale: 1; } }
+  .meta { padding: 18px 20px 20px; display: grid; gap: 8px; }
+  .meta strong { font-size: clamp(19px, 1.7vw, 24px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; }
+  .meta span { font: 500 10.5px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .meta .dur { color: var(--ice); }
+  .card-end > a { justify-content: center; align-items: flex-start; gap: 22px; padding: 40px 32px; background: radial-gradient(120% 100% at 100% 100%, #123156, var(--bg-2) 70%); min-height: 300px; }
+  .card-end strong { font-size: clamp(34px, 4vw, 60px); font-weight: 700; letter-spacing: -0.05em; line-height: 0.95; }
+  .card-end span { font: 500 11px var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ice); }
+
+  /* ---------- about ---------- */
+  .about { position: relative; overflow: hidden; padding: clamp(80px, 12vw, 180px) 0; }
+  .wave { position: absolute; left: 0; top: 50%; width: 100%; height: 240px; margin-top: -120px; opacity: 0.5; }
+  .wave path { fill: none; stroke: url(#wg); stroke-width: 1.5; stroke-dasharray: 1; stroke-dashoffset: 0; }
+  .about-grid { position: relative; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(32px, 8vw, 120px); align-items: center; }
+  .about-visual {
+    position: relative; aspect-ratio: 5 / 4; display: grid; place-items: center; overflow: hidden; border: 1px solid var(--line); border-radius: 8px;
+    background: radial-gradient(ellipse at 50% 50%, #1d4a6b, #11263a 48%, #070e19 76%);
+  }
+  .sq { position: absolute; left: 50%; top: 50%; border: 1px solid rgba(145, 223, 255, 0.5); transform: translate(-50%, -50%) rotate(45deg); }
+  .sq.a { width: 34%; aspect-ratio: 1; }
+  .sq.b { width: 54%; aspect-ratio: 1; border-color: rgba(145, 223, 255, 0.26); }
+  .sq.c { width: 76%; aspect-ratio: 1; border-color: rgba(95, 240, 192, 0.2); }
+  .mark { position: relative; font-weight: 700; font-size: clamp(54px, 9vw, 120px); letter-spacing: -0.09em; color: #e4f6ff; text-shadow: 0 0 60px rgba(101, 202, 255, 0.5); }
+  .about-visual .cap { position: absolute; left: 16px; bottom: 14px; font: 500 10px var(--font-mono); letter-spacing: 0.16em; color: #9abbd1; }
+  .about-copy h2 { margin: 18px 0; font-weight: 700; font-size: clamp(38px, 5vw, 76px); line-height: 0.95; letter-spacing: -0.06em; }
+  .about-copy p { max-width: 440px; color: #b6c6dc; font-size: 16px; line-height: 1.7; }
+  .specs { display: flex; gap: 40px; margin-top: 30px; font: 500 10px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .specs b { display: block; margin-bottom: 6px; font: 600 clamp(28px, 3vw, 40px) var(--font-display); letter-spacing: -0.04em; text-transform: none; color: var(--ice); }
+  .about-copy .actions { margin-top: 34px; }
+
+  /* ---------- credit ---------- */
+  .credit { padding: clamp(60px, 8vw, 120px) 0; border-block: 1px solid var(--line); background: linear-gradient(180deg, rgba(141, 220, 255, 0.045), rgba(141, 220, 255, 0)); }
+  .credit-grid { display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; }
+  .credit h2 { margin-top: 16px; font-weight: 700; font-size: clamp(34px, 5vw, 72px); line-height: 1; letter-spacing: -0.05em; }
+  .credit p { margin-top: 18px; max-width: 48ch; color: #b6c6dc; }
+  .copy {
+    display: grid; gap: 18px; min-width: min(100%, 340px); padding: 24px 26px; text-align: left; cursor: pointer;
+    color: var(--ink); background: #091525; border: 1px dashed rgba(141, 220, 255, 0.45); border-radius: 12px;
+    transition: border-color 0.25s, background-color 0.25s, scale 0.14s ease-out;
+  }
+  .copy:hover { background: #0c1c33; border-color: var(--ice); }
+  .copy:active { scale: 0.97; }
+  .copy-code { font: 500 clamp(20px, 2.2vw, 28px) var(--font-mono); letter-spacing: -0.02em; }
+  .copy-act { display: flex; align-items: center; gap: 10px; font: 500 11px var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ice); }
+  .copy-ico { position: relative; width: 18px; height: 18px; }
+  .copy-ico svg { position: absolute; inset: 0; transition: opacity 0.2s, scale 0.3s var(--ease-out); }
+  .ico-check { opacity: 0; scale: 0.4; color: var(--aurora); }
+  .ico-check path { stroke-dasharray: 24; stroke-dashoffset: 24; }
+  .copy.is-done { border-color: var(--aurora); }
+  .copy.is-done .ico-copy { opacity: 0; scale: 0.4; }
+  .copy.is-done .ico-check { opacity: 1; scale: 1; }
+  .copy.is-done .ico-check path { stroke-dashoffset: 0; transition: stroke-dashoffset 0.35s 0.1s ease-out; }
+  .copy.is-done .copy-act { color: var(--aurora); }
+
+  /* ---------- contact + footer ---------- */
+  .contact { padding: clamp(80px, 11vw, 160px) 0 40px; }
+  .contact h2 { margin-top: 16px; font-weight: 700; font-size: clamp(40px, 6vw, 92px); line-height: 0.95; letter-spacing: -0.055em; }
+  .links { margin-top: 44px; border-top: 1px solid var(--line); }
+  .row {
+    position: relative; display: flex; justify-content: space-between; align-items: center; gap: 20px; overflow: hidden; isolation: isolate;
+    padding: clamp(18px, 2.4vw, 34px) 4px; border-bottom: 1px solid var(--line); transition: color 0.25s, scale 0.14s ease-out;
+  }
+  .row::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--ice); transform: scaleY(0); transform-origin: 50% 100%; transition: transform 0.45s var(--ease-out); }
+  .row:hover, .row:focus-visible { color: #04101c; }
+  .row:hover::before, .row:focus-visible::before { transform: scaleY(1); }
+  .row:active { scale: 0.995; }
+  .row .k { font: 500 11px var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.7; min-width: 110px; }
+  .row .v { flex: 1; font-weight: 600; font-size: clamp(20px, 4.2vw, 62px); letter-spacing: -0.045em; line-height: 1.1; overflow-wrap: anywhere; transition: transform 0.45s var(--ease-out); }
+  .row:hover .v, .row:focus-visible .v { transform: translateX(14px); }
+  .row .arrow { font-size: clamp(20px, 3vw, 40px); transition: transform 0.35s var(--ease-out); }
+  .row:hover .arrow, .row:focus-visible .arrow { transform: translate(6px, -6px); }
+  .foot { position: relative; overflow: hidden; padding-top: 30px; }
+  .foot-word {
+    text-align: center; font-weight: 700; font-size: clamp(120px, 32vw, 520px); line-height: 0.78; letter-spacing: -0.08em; user-select: none;
+    color: transparent; -webkit-text-stroke: 1px rgba(141, 220, 255, 0.28);
+  }
+  .foot-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding-block: 22px 30px; font: 500 10px var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 899px) {
+    .nav-links { display: none; }
+    .orbwrap { right: -16%; top: 14%; width: 78vw; opacity: 0.75; }
+    .stamp, .fig { display: none; }
+    .beats-head { flex-direction: column; align-items: flex-start; }
+    .beats-meta { justify-items: start; }
+    .card { width: 78vw; }
+    .about-grid, .credit-grid { grid-template-columns: 1fr; }
+    .row .k { min-width: 0; }
+  }
+  @media (max-width: 520px) {
+    .row { flex-wrap: wrap; }
+    .row .k { width: 100%; }
+    .foot-bottom { flex-direction: column; }
+  }
+
+  /* ---------- reduced motion: tiered, not a kill switch ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important; scroll-behavior: auto !important;
+    }
+    .cursor, .mq-toggle { display: none !important; }
+    /* Tier 2: wipes and slides become short cross-fades */
+    .btn::before, .row::before { transform: none !important; opacity: 0; transition: opacity 0.15s !important; }
+    .btn:hover::before, .btn:focus-visible::before, .row:hover::before, .row:focus-visible::before { opacity: 1; transform: none !important; }
+    .row:hover .v, .row:hover .arrow, .row:focus-visible .v, .row:focus-visible .arrow { transform: none !important; }
+    .thumb img, .card > a:hover .thumb img, .card > a:focus-visible .thumb img { scale: 1.12 !important; }
+    .play { scale: 1 !important; transition: opacity 0.15s !important; }
+    .toast, .toast.is-on { transform: translate(-50%, 0) !important; transition: opacity 0.15s !important; }
+    /* Tier 3: feedback that stays */
+    .card > a::after, .copy, .copy-ico svg, .nav-links a::after { transition-duration: 0.15s !important; }
+    .nav-links a::after { transform: none; opacity: 0; transition-property: opacity; }
+    .nav-links a:hover::after, .nav-links a:focus-visible::after { opacity: 1; }
+  }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">OSXR <span>BEATS</span></div>
-  <nav>
-    <a href="#beats">Beats</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
+<a class="skip" href="#main">Skip to content</a>
+<div class="progress" aria-hidden="true"></div>
+<div class="cursor" aria-hidden="true"><span>PLAY</span></div>
+<div class="toast" role="status" aria-live="polite"></div>
+
+<header class="nav" id="nav">
+  <a class="logo" href="#top" aria-label="Osxr Beats, back to top">OSXR<b>®</b></a>
+  <nav aria-label="Primary">
+    <div class="nav-links">
+      <a href="#beats">Beats</a>
+      <a href="#about">About</a>
+      <a href="#credit">Free use</a>
+      <a href="#contact">Contact</a>
+    </div>
   </nav>
+  <a class="btn magnetic" href="https://www.youtube.com/@Osxrbeats" target="_blank" rel="noopener">YouTube ↗</a>
 </header>
 
-<div class="hero">
-  <h1>OSXR <span>BEATS</span></h1>
-  <p>Type beats & instrumentals, produced fresh every week.</p>
-  <a class="btn" href="https://www.youtube.com/@Osxrbeats" target="_blank" rel="noopener">Listen on YouTube</a>
-</div>
+<main id="main">
 
-<section id="beats">
-  <h2>Latest Beats</h2>
-  <div class="tracks">
-    <div class="track">
-      <h3>"POMPEII"</h3>
-      <p>Shiro x Y4ska x Montana Type Beat</p>
-      <a href="https://www.youtube.com/watch?v=C4Cd8wfMEpM" target="_blank" rel="noopener">Watch on YouTube →</a>
+  <section class="hero" id="top" aria-label="Introduction">
+    <div class="sky" aria-hidden="true">
+      <div class="stars s1"></div>
+      <div class="stars s2"></div>
+      <div class="aurora" data-depth="0.35">
+        <i class="l1"><b></b></i>
+        <i class="l2"><b></b></i>
+        <i class="l3"><b></b></i>
+      </div>
+      <div class="orbwrap" data-depth="0.7">
+        <div class="orb">
+          <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
+        </div>
+      </div>
     </div>
-    <div class="track">
-      <h3>"00:42"</h3>
-      <p>Sarettii Type Beat</p>
-      <a href="https://www.youtube.com/watch?v=TBk-tSiP3pc" target="_blank" rel="noopener">Watch on YouTube →</a>
+
+    <div class="mtns" aria-hidden="true">
+      <div class="mtn m1" data-far="18">
+        <svg viewBox="0 0 1440 400" preserveAspectRatio="none">
+          <defs><linearGradient id="gm1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a3860"/><stop offset="1" stop-color="#0a1830"/></linearGradient></defs>
+          <path fill="url(#gm1)" d="M0,400 L0,250 L90,200 L170,240 L260,150 L350,220 L430,180 L540,260 L640,170 L730,230 L820,140 L930,230 L1010,190 L1120,250 L1220,170 L1320,230 L1440,200 L1440,400 Z"/>
+        </svg>
+      </div>
+      <div class="mtn m2" data-far="10">
+        <svg viewBox="0 0 1440 400" preserveAspectRatio="none">
+          <defs><linearGradient id="gm2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d213f"/><stop offset="1" stop-color="#060e1d"/></linearGradient></defs>
+          <path fill="url(#gm2)" d="M0,400 L0,300 L120,250 L210,290 L330,210 L450,280 L560,240 L690,310 L800,250 L920,300 L1040,230 L1170,300 L1290,260 L1440,300 L1440,400 Z"/>
+        </svg>
+      </div>
+      <div class="mtn m3" data-far="0">
+        <svg viewBox="0 0 1440 400" preserveAspectRatio="xMidYMax slice">
+          <defs>
+            <pattern id="pineA" width="97" height="110" patternUnits="userSpaceOnUse" y="290"><path transform="translate(24 0)" fill="#040a16" d="M24 0 L38 34 L31 34 L44 64 L35 64 L48 96 L0 96 L13 64 L4 64 L17 34 L10 34 Z"/></pattern>
+            <pattern id="pineB" width="64" height="150" patternUnits="userSpaceOnUse" y="250"><path fill="#030710" d="M32 0 L50 44 L41 44 L58 84 L46 84 L64 130 L0 130 L18 84 L6 84 L23 44 L14 44 Z"/></pattern>
+          </defs>
+          <rect x="0" y="290" width="1440" height="110" fill="url(#pineA)"/>
+          <rect x="0" y="250" width="1440" height="150" fill="url(#pineB)"/>
+          <rect x="0" y="376" width="1440" height="24" fill="#030710"/>
+        </svg>
+      </div>
     </div>
-    <div class="track">
-      <h3>More on the channel</h3>
-      <p>100+ beats and counting</p>
-      <a href="https://www.youtube.com/@Osxrbeats" target="_blank" rel="noopener">Browse channel →</a>
+
+    <div class="stamp" aria-hidden="true" data-hero>NORDIC LIGHT · VOL. 01</div>
+    <div class="fig" aria-hidden="true" data-hero>FIG. 001 &nbsp; <b>POLAR LIGHT STUDY</b></div>
+
+    <div class="wrap hero-inner">
+      <p class="eyebrow" data-hero>Producer · sound architect</p>
+      <h1><span class="ln">Feel</span><span class="ln accent">the</span><span class="ln">Freq.</span></h1>
+      <div class="hero-foot">
+        <p class="intro" data-hero>Type beats and instrumentals cut from the cold light of the north, produced fresh every week.</p>
+        <div class="actions" data-hero>
+          <a class="btn magnetic" href="#beats">Explore the sound ↓</a>
+          <a class="btn btn-ghost magnetic" href="https://www.youtube.com/@Osxrbeats" target="_blank" rel="noopener">Listen on YouTube ↗</a>
+        </div>
+      </div>
     </div>
+
+    <div class="eq" aria-hidden="true" data-hero></div>
+    <div class="scrollhint" aria-hidden="true" data-hero>Scroll <span>↓</span></div>
+  </section>
+
+  <section class="marquee" aria-label="Highlights">
+    <div class="mq-track" data-marquee>
+      <div class="mq-group">
+        <span>Type beats</span><i>✳</i><span>Prod. Osxr Beats</span><i>✳</i><span>Dark textures</span><i>✳</i><span>Heavy low end</span><i>✳</i><span>Made in the north</span><i>✳</i><span>Fresh every week</span><i>✳</i>
+      </div>
+      <div class="mq-group" aria-hidden="true">
+        <span>Type beats</span><i>✳</i><span>Prod. Osxr Beats</span><i>✳</i><span>Dark textures</span><i>✳</i><span>Heavy low end</span><i>✳</i><span>Made in the north</span><i>✳</i><span>Fresh every week</span><i>✳</i>
+      </div>
+    </div>
+    <button class="mq-toggle" type="button" aria-pressed="false" aria-label="Pause scrolling text">
+      <svg class="ico-pause" width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/></svg>
+      <svg class="ico-play" width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M3 1.5v9l7.5-4.5z"/></svg>
+    </button>
+  </section>
+
+  <section class="manifesto" aria-label="Manifesto">
+    <div class="glow" aria-hidden="true"></div>
+    <div class="wrap">
+      <p>Beats cut from the <em>cold light</em> of the north. Dark textures, heavy low end and room for <em>your voice</em> to live.</p>
+    </div>
+  </section>
+
+  <section class="beats" id="beats" aria-labelledby="beats-title">
+    <div class="wrap beats-head" data-reveal>
+      <div>
+        <p class="eyebrow">The latest</p>
+        <h2 id="beats-title">Fresh frequencies.</h2>
+      </div>
+      <div class="beats-meta" aria-hidden="true">
+        <span class="counter"><b>01</b> / 09</span>
+        <span class="beats-progress"><i></i></span>
+      </div>
+    </div>
+
+    <div class="track-wrap">
+      <ul class="track" role="list">
+        <li class="card"><a href="https://www.youtube.com/watch?v=BHvcTRmsvsY" target="_blank" rel="noopener" data-cursor="PLAY">
+          <div class="thumb"><img src="https://i.ytimg.com/vi/BHvcTRmsvsY/hqdefault.jpg" alt="" width="480" height="360" decoding="async"><span class="num">01</span><span class="play"></span></div>
+          <div class="meta"><strong>“MANDAT DE DÉPÔT”</strong><span>Sticky x 23 x Lagui Type Beat</span><span class="dur">2:23</span><span class="sr">Watch on YouTube, opens in a new tab</span></div>
+        </a></li>
+        <li class="card"><a href="https://www.youtube.com/watch?v=vfJ5Zr--ZTw" target="_blank" rel="noopener" data-cursor="PLAY">
+          <div class="thumb"><img src="https://i.ytimg.com/vi/vfJ5Zr--ZTw/hqdefault.jpg" alt="" width="480" height="360" decoding="async"><span class="num">02</span><span class="play"></span></div>
+          <div class="meta"><strong>“MOST WANTED”</strong><span>C.Gambino x 23 x Ninety Type Beat</span><span class="dur">3:01</span><span class="sr">Watch on YouTube, opens in a new tab</span></div>
+        </a></li>
+        <li class="card"><a href="https://www.youtube.com/watch?v=gakidc9bUwY" target="_blank" rel="noopener" data-cursor="PLAY">
+          <div class="thumb"><img src="https://i.ytimg.com/vi/gakidc9bUwY/hqdefault.jpg" alt="" width="480" height="360" decoding="async"><span class="num">03</span><span class="play"></span></div>
+          <div class="meta"><strong>“HACK I HÄL”</strong><span>Nuqi Type Beat</span><span class="dur">2:34</span><span class="sr">Watch on YouTube, opens in a new tab</span></div>
+        </a></li>
+        <li class="card"><a href="https://www.youtube.com/watch?v=ubO51lw1aPI" target="_blank" rel="noopener" data-cursor="PLAY">
+          <div class="thumb"><img src="https://i.ytimg.com/vi/ubO51lw1aPI/hqdefault.jpg" alt="" width="480" height="360" decoding="async"><span class="num">04</span><span class="play"></span></div>
+          <div class="meta"><strong>“MATADOR”</strong><span>Sarettii Type Beat</span><span class="dur">2:34</span><span class="sr">Watch on YouTube, opens in a new tab</span></div>
+        </a></li>
+        <li class="card"><a href="https://www.youtube.com/watch?v=448Qgm6PrL4" target="_blank" rel="noopener" data-cursor="PLAY">
+          <div class="thumb"><img src="https://i.ytimg.com/vi/448Qgm6PrL4/hqdefault.jpg" alt="" width="480" height="360" decoding="async"><span class="num">05</span><span class="play"></span></div>
+          <div class="meta"><strong>“DONT LIE”</strong><span>Y4ska x Jireel x Nuqi Type Beat</span><span class="dur">2:48</span><span class="sr">Watch on YouTube, opens in a new tab</span></div>
+        </a></li>
+        <li class="card"><a href="https://www.youtube.com/watch?v=Bh6YKFZIIGo" target="_blank" rel="noopener" data-cursor="PLAY">
+          <div class="thumb"><img src="https://i.ytimg.com/vi/Bh6YKFZIIGo/hqdefault.jpg" alt="" width="480" height="360" decoding="async"><span class="num">06</span><span class="play"></span></div>
+          <div class="meta"><strong>“OLIVIA VALERE”</strong><span>Lagui x VEN1 x Sticky Type Beat</span><span class="dur">2:41</span><span class="sr">Watch on YouTube, opens in a new tab</span></div>
+        </a></li>
+        <li class="card"><a href="https://www.youtube.com/watch?v=C4Cd8wfMEpM" target="_blank" rel="noopener" data-cursor="PLAY">
+          <div class="thumb"><img src="https://i.ytimg.com/vi/C4Cd8wfMEpM/hqdefault.jpg" alt="" width="480" height="360" decoding="async"><span class="num">07</span><span class="play"></span></div>
+          <div class="meta"><strong>“POMPEII”</strong><span>Shiro x Y4ska x Montana Type Beat</span><span class="sr">Watch on YouTube, opens in a new tab</span></div>
+        </a></li>
+        <li class="card"><a href="https://www.youtube.com/watch?v=TBk-tSiP3pc" target="_blank" rel="noopener" data-cursor="PLAY">
+          <div class="thumb"><img src="https://i.ytimg.com/vi/TBk-tSiP3pc/hqdefault.jpg" alt="" width="480" height="360" decoding="async"><span class="num">08</span><span class="play"></span></div>
+          <div class="meta"><strong>“00:42”</strong><span>Sarettii Type Beat</span><span class="sr">Watch on YouTube, opens in a new tab</span></div>
+        </a></li>
+        <li class="card card-end"><a href="https://www.youtube.com/@Osxrbeats" target="_blank" rel="noopener" data-cursor="OPEN">
+          <span>09 · The full catalog</span>
+          <strong>100+ beats and counting →</strong>
+          <span class="sr">Browse the channel on YouTube, opens in a new tab</span>
+        </a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="about" id="about" aria-labelledby="about-title">
+    <svg class="wave" viewBox="0 0 1440 200" preserveAspectRatio="none" aria-hidden="true">
+      <defs><linearGradient id="wg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5ff0c0"/><stop offset="0.5" stop-color="#8ddcff"/><stop offset="1" stop-color="#8f86ff"/></linearGradient></defs>
+      <path pathLength="1" vector-effect="non-scaling-stroke" d="M0,100 Q90,-20 180,100 T360,100 T540,100 T720,100 T900,100 T1080,100 T1260,100 T1440,100"/>
+    </svg>
+    <div class="wrap about-grid">
+      <div class="about-visual" aria-hidden="true" data-reveal>
+        <span class="sq c"></span><span class="sq b"></span><span class="sq a"></span>
+        <span class="mark">OSXR</span>
+        <span class="cap">FIG. 002 &nbsp; FREQUENCY STUDY</span>
+      </div>
+      <div class="about-copy">
+        <p class="eyebrow" data-reveal>The sound behind OSXR</p>
+        <h2 id="about-title" data-reveal>More than a beat. A whole atmosphere.</h2>
+        <p data-reveal>Osxr Beats makes type beats and instrumentals for artists to rap or sing over. Every track starts with a feeling and ends wherever the sound takes it: uncommon textures, heavy low end and space for your voice.</p>
+        <div class="specs" data-reveal>
+          <div><b>100+</b>Beats released</div>
+          <div><b>Weekly</b>New instrumentals</div>
+        </div>
+        <div class="actions" data-reveal>
+          <a class="btn btn-ghost magnetic" href="https://www.youtube.com/@Osxrbeats" target="_blank" rel="noopener">Watch on YouTube ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="credit" id="credit" aria-labelledby="credit-title">
+    <div class="wrap credit-grid">
+      <div data-reveal>
+        <p class="eyebrow">Free use</p>
+        <h2 id="credit-title">Free for non-profit use.</h2>
+        <p>Most beats are free to use for non-profit projects. Just credit the producer in your title or description. Need it for something else? Get in touch.</p>
+      </div>
+      <button class="copy" type="button" data-copy="Prod. Osxr Beats" data-reveal>
+        <span class="copy-code">Prod. Osxr Beats</span>
+        <span class="copy-act">
+          <span class="copy-ico" aria-hidden="true">
+            <svg class="ico-copy" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="6" y="6" width="9" height="9" rx="2"/><path d="M3 11V4a1 1 0 0 1 1-1h7"/></svg>
+            <svg class="ico-check" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.5l3.5 3.5 7.5-8"/></svg>
+          </span>
+          <span class="copy-label">Copy credit</span>
+        </span>
+      </button>
+    </div>
+  </section>
+
+  <section class="contact" id="contact" aria-labelledby="contact-title">
+    <div class="wrap">
+      <div data-reveal>
+        <p class="eyebrow">Contact</p>
+        <h2 id="contact-title">Let’s make something.</h2>
+      </div>
+      <div class="links" data-reveal>
+        <a class="row" href="mailto:contact@osxrbeats.com" data-cursor="MAIL"><span class="k">Mail</span><span class="v">contact@osxrbeats.com</span><span class="arrow" aria-hidden="true">↗</span></a>
+        <a class="row" href="https://www.instagram.com/aakesson_oskar/" target="_blank" rel="noopener" data-cursor="OPEN"><span class="k">Instagram</span><span class="v">@aakesson_oskar</span><span class="arrow" aria-hidden="true">↗</span></a>
+        <a class="row" href="https://x.com/Osxrbeats" target="_blank" rel="noopener" data-cursor="OPEN"><span class="k">X</span><span class="v">@Osxrbeats</span><span class="arrow" aria-hidden="true">↗</span></a>
+        <a class="row" href="https://www.youtube.com/@Osxrbeats" target="_blank" rel="noopener" data-cursor="OPEN"><span class="k">YouTube</span><span class="v">@Osxrbeats</span><span class="arrow" aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="foot-word" aria-hidden="true">OSXR</div>
+  <div class="wrap foot-bottom">
+    <span>Independent sound. Made in the north.</span>
+    <span>&copy; 2026 Osxr Beats</span>
   </div>
-</section>
-
-<section id="about">
-  <h2>About</h2>
-  <p style="text-align:center; color: var(--muted); max-width: 600px; margin: 0 auto;">
-    Osxr Beats makes type beats and instrumentals for artists to rap or sing over.
-    Most beats are free for non-profit use — just credit "Prod. Osxr Beats" in your title or description.
-  </p>
-</section>
-
-<footer id="contact">
-  <p>Contact via <a href="https://www.youtube.com/@Osxrbeats" target="_blank" rel="noopener">YouTube</a></p>
-  <p>&copy; 2026 Osxr Beats</p>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
+<script>
+(() => {
+  const root = document.documentElement;
+  const $ = (s, c = document) => c.querySelector(s);
+  const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+  const params = new URLSearchParams(location.search);
+  const forceReduce = params.get('reduce') === '1';
+
+  /* ---------- equalizer bars: static markup, GSAP animates them when motion is allowed ---------- */
+  const eq = $('.eq');
+  const barCount = innerWidth < 640 ? 34 : 72;
+  for (let i = 0; i < barCount; i++) {
+    const bar = document.createElement('i');
+    const h = 22 + 78 * Math.abs(Math.sin(i * 0.37) * Math.cos(i * 0.11 + 0.6));
+    bar.style.setProperty('--h', h.toFixed(1));
+    eq.appendChild(bar);
+  }
+
+  /* ---------- toast + copy credit (works without GSAP) ---------- */
+  const toastEl = $('.toast');
+  let toastTimer;
+  const toast = (msg) => {
+    toastEl.textContent = msg;
+    toastEl.classList.add('is-on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('is-on'), 2400);
+  };
+  const copyBtn = $('[data-copy]');
+  const copyLabel = $('.copy-label', copyBtn);
+  let copyTimer;
+  copyBtn.addEventListener('click', async () => {
+    const text = copyBtn.dataset.copy;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const ta = Object.assign(document.createElement('textarea'), { value: text });
+      ta.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+    }
+    copyBtn.classList.add('is-done');
+    copyLabel.textContent = 'Copied';
+    toast('Credit copied. Thanks for the shout-out!');
+    clearTimeout(copyTimer);
+    copyTimer = setTimeout(() => {
+      copyBtn.classList.remove('is-done');
+      copyLabel.textContent = 'Copy credit';
+    }, 2200);
+  });
+
+  /* ---------- everything below needs GSAP; without it the page stays fully readable ---------- */
+  if (!(window.gsap && window.ScrollTrigger && window.SplitText)) {
+    root.classList.remove('anim');
+    return;
+  }
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+  ScrollTrigger.config({ ignoreMobileResize: true });
+
+  let lenis = null;
+  let beatsST = null;
+  const mm = gsap.matchMedia();
+
+  document.fonts.ready.then(() => {
+
+    /* ===== main page: motion (full) or reduced (Tier 2 fades only) ===== */
+    mm.add({
+      reduce: '(prefers-reduced-motion: reduce)',
+      fine: '(hover: hover) and (pointer: fine)',
+    }, (ctx) => {
+      const reduce = ctx.conditions.reduce || forceReduce;
+      const fine = ctx.conditions.fine;
+      root.classList.toggle('anim', !reduce);
+
+      // thin scroll progress bar: tied to scroll, no displacement, kept for everyone
+      gsap.to('.progress', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: true } });
+
+      if (reduce) {
+        // Tier 2: one short fade instead of the choreographed entrance. Aurora, orb, bars, marquee stay still.
+        gsap.from('.hero-inner', { opacity: 0, duration: 0.15, ease: 'none' });
+        window.__ready = true;
+        return;
+      }
+
+      const cleanups = [];
+      const loops = [];
+
+      /* ---- smooth scroll, driven by GSAP's ticker so ScrollTrigger stays in sync ---- */
+      if (window.Lenis) {
+        lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+        lenis.on('scroll', ScrollTrigger.update);
+        const tick = (t) => lenis.raf(t * 1000);
+        gsap.ticker.add(tick);
+        gsap.ticker.lagSmoothing(0);
+        const onAnchor = (e) => {
+          const a = e.target.closest('a[href^="#"]');
+          if (!a) return;
+          const id = a.getAttribute('href');
+          const target = id === '#top' ? 0 : id === '#beats' && beatsST ? beatsST.start : $(id);
+          if (target === null || target === undefined) return;
+          e.preventDefault();
+          lenis.scrollTo(target);
+        };
+        document.addEventListener('click', onAnchor);
+        cleanups.push(() => {
+          document.removeEventListener('click', onAnchor);
+          gsap.ticker.remove(tick);
+          gsap.ticker.lagSmoothing(500, 33);
+          lenis.destroy();
+          lenis = null;
+        });
+      }
+
+      /* ---- hero entrance: one master timeline (add ?t=1.5 to freeze it for screenshots) ---- */
+      const split = SplitText.create('.hero h1 .ln', { type: 'chars' });
+      cleanups.push(() => split.revert());
+      gsap.set('.hero h1', { visibility: 'visible' });
+
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      tl.fromTo('.hero .sky', { opacity: 0 }, { opacity: 1, duration: 1.8, ease: 'power1.out' }, 0)
+        .fromTo('.aurora i', { yPercent: 28, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 2.4, stagger: 0.25 }, 0.1)
+        .fromTo('.orb', { scale: 0.55, opacity: 0 }, { scale: 1, opacity: 1, duration: 2, ease: 'expo.out' }, 0.3)
+        .fromTo('.mtn svg', { yPercent: 30 }, { yPercent: 0, duration: 1.8, stagger: 0.14 }, 0.2)
+        .fromTo('.nav > *', { y: -24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.08 }, 0.7)
+        .fromTo('.hero .eyebrow', { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.7 }, 0.75)
+        .fromTo(split.chars, { yPercent: 118 }, { yPercent: 0, duration: 1.15, stagger: 0.045, ease: 'expo.out' }, 0.85)
+        .fromTo('.hero .intro, .hero .actions', { autoAlpha: 0, y: 26 }, { autoAlpha: 1, y: 0, duration: 0.85, stagger: 0.12 }, 1.6)
+        .fromTo('.eq, .stamp, .fig, .scrollhint', { autoAlpha: 0 }, { autoAlpha: 1, duration: 1.2, stagger: 0.1, ease: 'power1.out' }, 1.7);
+      const seek = params.get('t');
+      if (seek !== null) { tl.pause(); tl.seek(parseFloat(seek)); }
+
+      /* ---- ambient loops (all transform/opacity), paused whenever the hero is off-screen ---- */
+      $$('.aurora b').forEach((b, i) => {
+        const dir = i % 2 ? 1 : -1;
+        loops.push(gsap.to(b, { xPercent: 14 * dir, skewX: -9 * dir, scaleY: 1.14, duration: 9 + i * 3, ease: 'sine.inOut', repeat: -1, yoyo: true }));
+        loops.push(gsap.to(b, { opacity: 0.45, duration: 5 + i * 2, ease: 'sine.inOut', repeat: -1, yoyo: true }));
+      });
+      loops.push(gsap.to('.stars.s1', { opacity: 0.35, duration: 3.2, ease: 'sine.inOut', repeat: -1, yoyo: true }));
+      loops.push(gsap.to('.stars.s2', { opacity: 0.4, duration: 4.4, ease: 'sine.inOut', repeat: -1, yoyo: true, delay: 1 }));
+      loops.push(gsap.to('.ring.r1', { rotation: 360, duration: 90, ease: 'none', repeat: -1 }));
+      loops.push(gsap.to('.ring.r2', { rotation: -360, duration: 140, ease: 'none', repeat: -1 }));
+      loops.push(gsap.to('.ring.r3', { rotation: 360, duration: 200, ease: 'none', repeat: -1 }));
+      loops.push(gsap.to('.orb', { scale: 1.03, duration: 6, ease: 'sine.inOut', repeat: -1, yoyo: true, delay: 2.4 }));
+      loops.push(gsap.to('.scrollhint span', { y: 6, duration: 0.9, ease: 'sine.inOut', repeat: -1, yoyo: true }));
+      $$('.eq i').forEach((bar) => {
+        loops.push(gsap.fromTo(bar, { scaleY: 0.14 }, {
+          scaleY: () => gsap.utils.random(0.4, 1),
+          duration: gsap.utils.random(0.4, 0.9), delay: gsap.utils.random(0, 0.6),
+          ease: 'sine.inOut', repeat: -1, yoyo: true, repeatRefresh: true,
+        }));
+      });
+      ScrollTrigger.create({
+        trigger: '.hero', start: 'top bottom', end: 'bottom top',
+        onToggle: (self) => loops.forEach((l) => (self.isActive ? l.resume() : l.pause())),
+      });
+
+      /* ---- hero parallax on scroll ---- */
+      const heroScrub = { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true };
+      gsap.to('.hero-inner', { yPercent: -14, opacity: 0, ease: 'none', scrollTrigger: heroScrub });
+      gsap.to('.hero .sky', { yPercent: 16, ease: 'none', scrollTrigger: heroScrub });
+      $$('.mtn').forEach((m) => gsap.to(m, { yPercent: +m.dataset.far, ease: 'none', scrollTrigger: heroScrub }));
+
+      /* ---- pointer parallax (mouse only) ---- */
+      if (fine) {
+        const layers = $$('[data-depth]').map((el) => ({
+          x: gsap.quickTo(el, 'x', { duration: 1.4, ease: 'power3' }),
+          y: gsap.quickTo(el, 'y', { duration: 1.4, ease: 'power3' }),
+          d: parseFloat(el.dataset.depth),
+        }));
+        const hero = $('.hero');
+        const onMove = (e) => {
+          const nx = e.clientX / innerWidth - 0.5;
+          const ny = e.clientY / innerHeight - 0.5;
+          layers.forEach((l) => { l.x(-nx * 70 * l.d); l.y(-ny * 44 * l.d); });
+        };
+        hero.addEventListener('pointermove', onMove);
+        cleanups.push(() => hero.removeEventListener('pointermove', onMove));
+
+        /* custom cursor: a dot that blooms into a label over cards and links */
+        const cur = $('.cursor');
+        const label = $('span', cur);
+        const cx = gsap.quickTo(cur, 'x', { duration: 0.35, ease: 'power3' });
+        const cy = gsap.quickTo(cur, 'y', { duration: 0.35, ease: 'power3' });
+        const onCurMove = (e) => { cur.classList.add('on'); cx(e.clientX); cy(e.clientY); };
+        const onOver = (e) => {
+          const t = e.target.closest('[data-cursor]');
+          cur.classList.toggle('is-hover', !!t);
+          if (t) label.textContent = t.dataset.cursor;
+        };
+        const onLeaveDoc = () => cur.classList.remove('on');
+        document.addEventListener('pointermove', onCurMove);
+        document.addEventListener('pointerover', onOver);
+        document.documentElement.addEventListener('pointerleave', onLeaveDoc);
+        cleanups.push(() => {
+          document.removeEventListener('pointermove', onCurMove);
+          document.removeEventListener('pointerover', onOver);
+          document.documentElement.removeEventListener('pointerleave', onLeaveDoc);
+          cur.classList.remove('on', 'is-hover');
+        });
+
+        /* magnetic buttons */
+        $$('.magnetic').forEach((el) => {
+          const xt = gsap.quickTo(el, 'x', { duration: 0.5, ease: 'power3' });
+          const yt = gsap.quickTo(el, 'y', { duration: 0.5, ease: 'power3' });
+          const move = (e) => {
+            const r = el.getBoundingClientRect();
+            xt((e.clientX - r.left - r.width / 2) * 0.3);
+            yt((e.clientY - r.top - r.height / 2) * 0.3);
+          };
+          const leave = () => { xt(0); yt(0); };
+          el.addEventListener('pointermove', move);
+          el.addEventListener('pointerleave', leave);
+          cleanups.push(() => { el.removeEventListener('pointermove', move); el.removeEventListener('pointerleave', leave); });
+        });
+
+        /* card tilt */
+        $$('.card').forEach((card) => {
+          gsap.set(card, { transformPerspective: 900 });
+          const rx = gsap.quickTo(card, 'rotationX', { duration: 0.5, ease: 'power3' });
+          const ry = gsap.quickTo(card, 'rotationY', { duration: 0.5, ease: 'power3' });
+          const move = (e) => {
+            const r = card.getBoundingClientRect();
+            ry(((e.clientX - r.left) / r.width - 0.5) * 10);
+            rx(-((e.clientY - r.top) / r.height - 0.5) * 10);
+          };
+          const leave = () => { rx(0); ry(0); };
+          card.addEventListener('pointermove', move);
+          card.addEventListener('pointerleave', leave);
+          cleanups.push(() => { card.removeEventListener('pointermove', move); card.removeEventListener('pointerleave', leave); });
+        });
+      }
+
+      /* ---- nav hides on scroll down, returns on scroll up or keyboard focus ---- */
+      const nav = $('.nav');
+      let navHidden = false;
+      const setNav = (hide) => {
+        if (hide === navHidden) return;
+        navHidden = hide;
+        gsap.to(nav, { yPercent: hide ? -110 : 0, duration: 0.45, ease: 'power3.out', overwrite: true });
+      };
+      ScrollTrigger.create({ start: 0, end: 'max', onUpdate: (self) => setNav(self.direction === 1 && self.scroll() > 240) });
+      nav.addEventListener('focusin', () => setNav(false));
+
+      /* ---- marquee: speeds up with scroll velocity, flips with direction, user-pausable ---- */
+      const mq = gsap.to('[data-marquee]', { xPercent: -50, ease: 'none', duration: 38, repeat: -1 });
+      const mqBtn = $('.mq-toggle');
+      let mqPaused = false;
+      const onMq = () => {
+        mqPaused = !mqPaused;
+        mq.paused(mqPaused);
+        mqBtn.setAttribute('aria-pressed', String(mqPaused));
+        mqBtn.setAttribute('aria-label', mqPaused ? 'Play scrolling text' : 'Pause scrolling text');
+      };
+      mqBtn.addEventListener('click', onMq);
+      cleanups.push(() => mqBtn.removeEventListener('click', onMq));
+      ScrollTrigger.create({
+        trigger: '.marquee', start: 'top bottom', end: 'bottom top',
+        onToggle: (self) => { if (!mqPaused) mq.paused(!self.isActive); },
+        onUpdate: (self) => {
+          if (mqPaused) return;
+          const dir = self.direction;
+          gsap.killTweensOf(mq);
+          gsap.timeline()
+            .to(mq, { timeScale: dir * Math.min(1 + Math.abs(self.getVelocity()) / 260, 6), duration: 0.2 })
+            .to(mq, { timeScale: dir, duration: 1.2 });
+        },
+      });
+
+      /* ---- manifesto: pinned, words light up as you scroll ---- */
+      const words = SplitText.create('.manifesto p', { type: 'words' });
+      cleanups.push(() => words.revert());
+      const wStep = 0.12;
+      const mtl = gsap.timeline({
+        scrollTrigger: { trigger: '.manifesto', start: 'top top', end: '+=130%', pin: true, scrub: 0.6, refreshPriority: 3 },
+      });
+      mtl.fromTo(words.words, { opacity: 0.14 }, { opacity: 1, stagger: wStep, duration: 1, ease: 'none' }, 0)
+         .fromTo('.manifesto .glow', { scale: 0.5, opacity: 0 }, { scale: 1.35, opacity: 0.7, duration: words.words.length * wStep, ease: 'none' }, 0);
+
+      /* ---- generic reveals ---- */
+      ScrollTrigger.batch('[data-reveal]', {
+        start: 'top 90%',
+        onEnter: (els) => gsap.fromTo(els, { y: 36, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out', stagger: 0.1, overwrite: true }),
+      });
+
+      /* ---- about: sound wave draws itself, squares turn with scroll ---- */
+      gsap.fromTo('.wave path', { strokeDashoffset: 1 }, {
+        strokeDashoffset: 0, ease: 'none',
+        scrollTrigger: { trigger: '.about', start: 'top 80%', end: 'center 35%', scrub: true },
+      });
+      const sqScrub = { trigger: '.about-visual', start: 'top bottom', end: 'bottom top', scrub: true };
+      gsap.fromTo('.sq.a', { rotation: 45 }, { rotation: 225, ease: 'none', scrollTrigger: sqScrub });
+      gsap.fromTo('.sq.b', { rotation: 45 }, { rotation: -135, ease: 'none', scrollTrigger: sqScrub });
+      gsap.fromTo('.sq.c', { rotation: 45 }, { rotation: 135, scale: 1.12, ease: 'none', scrollTrigger: sqScrub });
+
+      /* ---- footer word rises into place ---- */
+      gsap.fromTo('.foot-word', { yPercent: 38, opacity: 0.2 }, {
+        yPercent: 0, opacity: 1, ease: 'none',
+        scrollTrigger: { trigger: '.foot', start: 'top bottom', end: 'bottom bottom', scrub: true },
+      });
+
+      window.__ready = true;
+      console.log('hero duration', tl.duration());
+
+      return () => cleanups.forEach((fn) => fn());
+    });
+
+    /* ===== beats: horizontal pinned gallery on wide screens with motion; native scroll-snap otherwise ===== */
+    mm.add({
+      wide: '(min-width: 900px)',
+      reduce: '(prefers-reduced-motion: reduce)',
+    }, (ctx) => {
+      if (ctx.conditions.reduce || forceReduce || !ctx.conditions.wide) return;
+      const sec = $('.beats');
+      const track = $('.track');
+      const counter = $('.counter b');
+      const bar = $('.beats-progress i');
+      const total = $$('.card').length;
+      sec.classList.add('is-pinned');
+      const dist = () => Math.max(0, track.scrollWidth - innerWidth);
+
+      const slide = gsap.to(track, {
+        x: () => -dist(), ease: 'none',
+        scrollTrigger: {
+          trigger: sec, start: 'top top', end: () => '+=' + dist(), pin: true, scrub: 0.8,
+          invalidateOnRefresh: true, anticipatePin: 1, refreshPriority: 2,
+          onUpdate: (self) => {
+            counter.textContent = String(Math.min(total, Math.floor(self.progress * total) + 1)).padStart(2, '0');
+            gsap.set(bar, { scaleX: 0.11 + self.progress * 0.89 });
+          },
+        },
+      });
+      beatsST = slide.scrollTrigger;
+
+      // thumbnails drift against the track for depth
+      $$('.card .thumb img').forEach((img) => {
+        gsap.fromTo(img, { xPercent: -5 }, {
+          xPercent: 5, ease: 'none',
+          scrollTrigger: { trigger: img.closest('.card'), containerAnimation: slide, start: 'left right', end: 'right left', scrub: true },
+        });
+      });
+
+      return () => { sec.classList.remove('is-pinned'); beatsST = null; };
+    });
+
+  });
+})();
+</script>
 </body>
 </html>
